@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const { mongodburi } = require('./config.js');
+const mongodburi  = process.env.DATABASE_STRING
 
 const uri = mongodburi;
 const client = new MongoClient(uri, {autoIndex: false});

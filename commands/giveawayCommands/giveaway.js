@@ -7,11 +7,10 @@ module.exports = {
   description: 'create giveaway',
   execute: async (client, message, config) => {
     const msgArr = message.content.split(' ');
-    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.giveaways.includes(r.id))) { return message.reply('You\'re not allowed to use this command!'); }
     var time = '';
     var time2 = '';
     var time3 = '';
-    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.giveaways.includes(r.id))) { return message.reply('You\'re not allowed to use this command!'); }
+    if (message.author.id !== '620196347890499604' && message.author.id !== '173347297181040640' && !message.member.permissions.has("ADMINISTRATOR")) { return message.reply('You\'re not allowed to use this command!'); }
     if (message.content.split(' ')[2] === '') return message.channel.send('You didn\'t state a duration or a prize for the giveaway.');
     const stated_duration_hours = message.content.split(' ')[1];
     const stated_duration_hours2 = stated_duration_hours.toLowerCase();
@@ -57,13 +56,15 @@ module.exports = {
       const prize = message.content.split(' ').slice(2).join(' ');
       if (prize === '') return message.channel.send('You have to enter a prize.');
       if (stated_duration_hours3 !== '0') {
-        const embed = new Discord.MessageEmbed()
+        embed = new Discord.MessageEmbed()
+        embed
           .setTitle(`${prize}`)
           .setColor('36393F')
           .setDescription(`React with 🎉 to enter!\nTime duration: **${stated_duration_hours3}** ${time2}${time3}\nHosted by: ${message.author}`)
           .setTimestamp(Date.now() + (actual_duration_hours))
           .setFooter('Ends at');
-        const msg = await message.channel.send(':tada: **GIVEAWAY** :tada:', embed);
+        const titleMessage =  message.channel.send(":tada: **GIVEAWAY** :tada:")
+        const msg = await message.channel.send({embeds:[embed]}); //:tada: **GIVEAWAY** :tada:
         await msg.react('🎉');
         setTimeout(() => {
           msg.reactions.cache.get('🎉').users.remove(client.user.id);
@@ -80,7 +81,8 @@ module.exports = {
                 .setDescription(`Winner:\nNo one entered the giveaway.\nHosted by: ${message.author}`)
                 .setTimestamp()
                 .setFooter('Ended at');
-              msg.edit(':tada: **GIVEAWAY ENDED** :tada:', winner_embed);
+                titleMessage.edit(':tada: **GIVEAWAY ENDED** :tada:')
+                msg.edit({embeds: [winner_embed]});
             }
             if (!msg.reactions.cache.get('🎉').users.cache.size < 1) {
               const winner_embed = new Discord.MessageEmbed()
@@ -89,7 +91,8 @@ module.exports = {
                 .setDescription(`Winner:\n${winner}\nHosted by: ${message.author}`)
                 .setTimestamp()
                 .setFooter('Ended at');
-              msg.edit(':tada: **GIVEAWAY ENDED** :tada:', winner_embed);
+              titleMessage.edit(':tada: **GIVEAWAY ENDED** :tada:')
+              msg.edit({embeds: [winner_embed]});
             }
           }, 1000);
         }, actual_duration_hours);

@@ -1,5 +1,6 @@
 node_modules
 config.js
+.env
 commands/.DS_Store
 img/leaderboards/.DS_Store
 img/.DS_Store
