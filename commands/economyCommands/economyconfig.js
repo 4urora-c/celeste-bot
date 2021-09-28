@@ -4,7 +4,7 @@ module.exports = {
   aliases: [],
   usage: 'economyconfig',
   execute: async (client, message, config) => {
-    if (!message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { message.reply('You\'re not allowed to use this command!'); return; }
+    if (!message.author.id !== '620196347890499604' && !message.member.permissions.has('ADMINISTRATOR')) { message.reply('You\'re not allowed to use this command!'); return; }
     const msgArr = message.content.split(' ');
     if (msgArr.length === 1) {
       message.channel.send(Object.keys(config.levelSettings).map((settingName) => `> ${settingName} - ${config.levelSettings[settingName]}`).join('\n'));

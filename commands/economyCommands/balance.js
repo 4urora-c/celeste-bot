@@ -21,7 +21,7 @@ module.exports = {
       const embed = new Discord.MessageEmbed()
       .setColor('#5b4194')
       .setDescription(`${user} has ${userdata.coins} ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}!`);
-      message.channel.send({embed: embed});
+      message.channel.send({embeds: [embed]});
     } else {
       return message.channel.send('Your profile has not been generated yet.');
     }

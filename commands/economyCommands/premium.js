@@ -16,7 +16,7 @@ module.exports = {
       .setColor('#5b4194')
       .setTitle('Celeste Premium')
       .setDescription('Celeste Premium is a way for you to gain additional perks such as monthly currency and the ability to change your profile image. Premium can be obtained through boosting Polaris or winning giveaways.');
-      return message.channel.send({embed: embed});
+      return message.channel.send({embeds: [embed]});
     }
     let target = message.mentions.users.first() || client.users.cache.get(msgArr[1]);
       const userdata = await client.db.islandinfo.findOne({
@@ -29,12 +29,12 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
         .setColor('#5b4194')
         .setDescription(`${target}'s premium status is ${userdata.hasPremium}!`)
-        return message.channel.send({embed: embed});
+        return message.channel.send({embeds: [embed]});
     } else if (!userdata.hasPremium && !msgArr[2]) {
       const embed = new Discord.MessageEmbed()
       .setColor('#5b4194')
       .setDescription(`${target}'s premium status is false!`)
-      return message.channel.send({embed: embed});
+      return message.channel.send({embeds: [embed]});
     }
       if (msgArr[2].toLowerCase() === 'true' || msgArr[2].toLowerCase() === 'false') {
         client.db.islandinfo.updateOne({ id: target.id }, {
@@ -45,7 +45,7 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
         .setColor('#5b4194')
         .setDescription(`You have successfully set premium to ${msgArr[2]} for ${target}!`);
-        message.channel.send({embed: embed});
+        message.channel.send({embeds: [embed]});
       } else {
         message.channel.send('You can only specify true or false!');
       }

@@ -26,7 +26,7 @@ module.exports = {
       const failembed = new Discord.MessageEmbed()
       .setColor('#d40000')
       .setDescription(`You don't have enough ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}!`);
-      return message.channel.send({embed: failembed});
+      return message.channel.send({embeds: [failembed]});
     } else if (amount <= 0 ) {
       message.channel.send('You cannot send a negative amount!');
       return;
@@ -35,7 +35,7 @@ module.exports = {
     const embed = new Discord.MessageEmbed()
     .setColor('#0fdb00')
     .setDescription(`✅ ${message.author} gave ${target} ${amount} ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}!`);
-    message.channel.send({embed: embed});
+    message.channel.send({embeds: [embed]});
     await client.db.userdata.updateOne({ id: target.id, guildID: message.guild.id }, { $inc: { coins: amount } }, { upsert: true });
     await client.db.userdata.updateOne({ id: message.author.id, guildID: message.guild.id }, { $inc: { coins: -amount } }, { upsert: true });
   } else {

@@ -6,6 +6,7 @@ module.exports = {
   aliases: [],
   usage: 'hunt',
   execute: async (client, message, config) => {
+    console.log(config)
     if (!config.crime) {
       message.channel.send('Crime amount not configured.');
       return;
@@ -25,14 +26,14 @@ module.exports = {
       .setTitle('Crime')
       .setDescription(`✅ ${message.author} you got ${amount} ${guilddata.currencyname ? guilddata.currencyname : 'Bells'}!`);
       await client.db.userdata.updateOne({ id: message.author.id, guildID: message.guild.id }, { $inc: { coins: amount } }, { upsert: true });
-      message.channel.send({ embed });
+      message.channel.send({ embeds: [embed] });
     } else if (loss === 1) {
       const embed = new Discord.MessageEmbed()
         .setColor('#c20000')
         .setTitle('Crime')
         .setDescription(`${message.author} you lost ${amount} ${guilddata.currencyname ? guilddata.currencyname : 'Bells'}!`);
         await client.db.userdata.updateOne({ id: message.author.id, guildID: message.guild.id }, { $inc: { coins: -amount } }, { upsert: true });
-        message.channel.send({ embed });
+        message.channel.send({ embeds: [embed] });
     }
   },
 };

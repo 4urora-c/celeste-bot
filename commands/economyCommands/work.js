@@ -22,7 +22,7 @@ module.exports = {
       .setColor('#5b4194')
       .setTitle('Work')
       .setDescription(`✅ ${message.author} you got ${amount} ${guilddata.currencyname ? guilddata.currencyname : 'Bells'}!`);
-    message.channel.send({ embed });
+    message.channel.send({ embeds: [embed] });
     await client.db.userdata.updateOne({ id: message.author.id, guildID: message.guild.id }, { $inc: { coins: amount } }, { upsert: true });
   },
 };

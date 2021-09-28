@@ -13,7 +13,7 @@ module.exports = {
       id: message.guild.id,
     });
     if (!guilddata.economy || guilddata.economy === 'true') {
-    if (!message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.hasPermission(['ADMINISTRATOR']))) { message.reply('You\'re not allowed to use this command!'); return; }
+    if (!message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has('ADMINISTRATOR'))) { message.reply('You\'re not allowed to use this command!'); return; }
     const msgArr = message.content.split(' ');
     const target = message.mentions.members.first() || message.guild.members.cache.get(msgArr[1]);
     const amount = parseInt(msgArr[2], 10);
@@ -25,7 +25,7 @@ module.exports = {
     const embed = new Discord.MessageEmbed()
     .setColor('#5b4194')
     .setDescription(`✅ ${message.author} removed ${amount} ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'} from ${target}!`);
-    message.channel.send({embed: embed});
+    message.channel.send({embeds: [embed]});
     await client.db.userdata.updateOne({ id: target.id, guildID: message.guild.id }, { $inc: { coins: -amount } }, { upsert: true });
   } else {
     return message.channel.send('Economy is disabled on this guild!');

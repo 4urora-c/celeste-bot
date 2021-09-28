@@ -4,7 +4,7 @@ module.exports = {
   aliases: [],
   usage: 'setexplore',
   execute: async (client, message, config) => {
-    if (!message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.hasPermission(['ADMINISTRATOR']))) { message.reply('You\'re not allowed to use this command!'); return; }
+    if (!message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has('ADMINISTRATOR'))) { message.reply('You\'re not allowed to use this command!'); return; }
     const msgArr = message.content.split(' ');
     if (!msgArr[1]) {
       message.channel.send('Configure explore amount first using ;setexplore min-max');

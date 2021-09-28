@@ -4,7 +4,7 @@ module.exports = {
   aliases: 'shopadd',
   usage: 'addshop',
   execute: async (client, message, config) => {
-    if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { message.reply('You\'re not allowed to use this command!'); return; }
+    if (message.author.id !== '620196347890499604' && !message.member.permissions.has('ADMINISTRATOR')) { message.reply('You\'re not allowed to use this command!'); return; }
     const guilddata = await client.db.config.findOne({
       id: message.guild.id,
     });

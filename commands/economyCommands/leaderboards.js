@@ -73,7 +73,9 @@ module.exports = {
       i += 1;
     }
     const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'leaderboard.png');
-    message.channel.send(attachment);
+    message.channel.send({files: [
+      { file: attachment }
+  ]});
   } else if (msgArr[1] === 'levels') {
     if (client.leaderboards) {
       clearInterval(client.leaderboards);
@@ -118,7 +120,9 @@ module.exports = {
       i += 1;
     }
     const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'leaderboard.png');
-    message.channel.send(attachment);
+    message.channel.send({files: [
+      { file: attachment }
+  ]});
   }
 
   },

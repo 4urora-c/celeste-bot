@@ -33,12 +33,12 @@ module.exports = {
             const item = config.shop[itemName];
             `${item.emote ? `${item.emote} ` : ''}${itemName} \r\n Price: ${item.price} ${guilddata.currencyname ? guilddata.currencyname : 'Bells'} `;
           }); */
-          message.channel.send(embed);
-    } else {
+          message.channel.send({embeds: [embed]});
+        } else {
       const embed = new Discord.MessageEmbed()
       .setTitle('Server Shop')
       .setDescription('There are no items in the shop!');
-      message.channel.send(embed);
+      message.channel.send({embeds: [embed]});
     }
   },
 };

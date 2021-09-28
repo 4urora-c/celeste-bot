@@ -29,7 +29,7 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
         .setColor('#c90000')
         .setDescription(`You don't have enough ${guilddata.currencyname ? guilddata.currencyname : 'Bells'} to do this!`)
-        message.channel.send(embed);
+        message.channel.send({embeds: [embed]});
         return;
       }
 
@@ -45,7 +45,7 @@ module.exports = {
         .setDescription(`${message.member} bought ${item.emote}${itemName}`)
         .setFooter(`${message.guild}'s server shop `)
         .setTimestamp();
-        client.channels.cache.get(config.channels.purchaselog).send({embed: embed});
+        client.channels.cache.get(config.channels.purchaselog).send({embeds: [embed]});
       }
 
       const embed = new Discord.MessageEmbed()
@@ -53,7 +53,7 @@ module.exports = {
         .setTitle('Successful purchase!')
         .setDescription(`You have successfully bought ${item.emote ? item.emote : ''}**${item.name}** for ${item.price} ${guilddata.currencyname ? guilddata.currencyname : 'Bells'}`);
 
-      message.channel.send(embed);
+      message.channel.send({embeds: [embed]});
     }
   },
 };
