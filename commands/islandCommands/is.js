@@ -35,7 +35,7 @@ module.exports = {
         if (userdata.alts) {
           embed.addField('Alt Account', userdata.alts);
         }
-        message.channel.send(embed);
+        message.channel.send({embeds: [embed]});
       } else {
         message.channel.send('Specified user doesn\'t have any island info!');
       }

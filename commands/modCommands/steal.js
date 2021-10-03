@@ -8,7 +8,7 @@ module.exports = {
   execute: async (client, message, config, distube) => {
     const msgArr = message.content.split(' ').slice(1);
 
-    if (!message.member.hasPermission('ADMINISTRATOR')) return message.channel.send('You don\'t have permission to run that command!')
+    if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send('You don\'t have permission to run that command!')
     
    const hasEmoteRegex = /<a?:.+:\d+>/gm
    const emoteRegex = /<:.+:(\d+)>/gm
@@ -24,7 +24,7 @@ module.exports = {
    const embed = new Discord.MessageEmbed()
    .setColor('GREEN')
    .setDescription(`Static emote **${msgArr[1]}** has been added to the server!`)
-   return message.channel.send(embed)
+   return message.channel.send({embeds: [embed]})
    }
    else if (emoji = animatedEmoteRegex.exec(message2)) {
    const url = "https://cdn.discordapp.com/emojis/" + emoji[1] + ".gif?v=1"
@@ -32,7 +32,7 @@ module.exports = {
    const embed = new Discord.MessageEmbed()
    .setColor('GREEN')
    .setDescription(`Animated emote **${msgArr[1]}** has been added to the server!`)
-   return message.channel.send(embed)
+   return message.channel.send({embeds: [embed]})
    }
    else {
    message.channel.send("Couldn't find an emoji to add!")
@@ -42,7 +42,7 @@ module.exports = {
    const embed = new Discord.MessageEmbed()
    .setColor('RED')
    .setDescription('There was an error while adding the emote to the server!')
-   return message.channel.send(embed);
+   return message.channel.send({embeds: [embed]});
  }
   },
 };

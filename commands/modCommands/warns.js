@@ -10,7 +10,7 @@ module.exports = {
   permissions: true,
   execute: async (client, message, config) => {
     const msgArr = message.content.split(' ');
-    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.hasPermission(['ADMINISTRATOR']))) { return message.reply('you\'re not allowed to use this command!'); }
+    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has(['ADMINISTRATOR']))) { return message.reply('you\'re not allowed to use this command!'); }
     if (msgArr[1] && msgArr[1].toLowerCase() === 'clear') {
       if (msgArr[2]) {
         let clearUser = message.mentions.members.first() || message.guild.members.cache.get(msgArr[2]);
@@ -22,7 +22,7 @@ module.exports = {
           const embed = new Discord.MessageEmbed()
           .setColor('GREEN')
           .setDescription(`All warns cleared for **${clearUser.user.tag}**.`)
-          return message.channel.send({embed: embed})
+          return message.channel.send({embeds: [embed]})
         }
       } else if (msgArr[3]) {
         let clearUser = message.mentions.members.first() || message.guild.members.cache.get(msgArr[2]);
@@ -37,7 +37,7 @@ module.exports = {
           const embed = new Discord.MessageEmbed()
           .setColor('GREEN')
           .setDescription(`Warn ${indVal+1} cleared for **${clearUser.user.tag}**.`)
-          return message.channel.send({embed: embed})
+          return message.channel.send({embeds: [embed]})
         }
       }
       }
@@ -59,12 +59,12 @@ module.exports = {
           const warnDate = new Date(warn.date);
           return `${index + 1}) at ${warnDate.getUTCMonth() + 1}/${warnDate.getUTCDate()}/${warnDate.getUTCFullYear()} for ${warn.reason}.`;
         }).join('\n')}\`\`\`\n\nTo remove warnings, do **;warns clear <user> [index]**`)
-        message.channel.send({embed: embed})};
+        message.channel.send({embeds: [embed]})};
       } else {
         const embed = new Discord.MessageEmbed()
         .setDescription(`**${targetUser} doesn't have any active warnings.**`)
         .setColor('GREEN')
-        message.channel.send({embed: embed});
+        message.channel.send({embeds: [embed]});
       }
   },
 };

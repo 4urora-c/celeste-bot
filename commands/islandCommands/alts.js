@@ -32,7 +32,7 @@ module.exports = {
       const embedA = new Discord.MessageEmbed()
         .setColor('#5b4194')
         .setDescription(`Your alternate account username has been set to **${msgArr.slice(1).join(' ')}**!`);
-      message.channel.send({ embed: embedA });
+      message.channel.send({ embeds: [embedA] });
     } else {
       message.channel.send('You must provide a username!');
     }

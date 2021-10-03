@@ -45,7 +45,7 @@ module.exports = {
       )
     });
     console.log(`Search for ${name} successful.`);
-    message.channel.send({embed: embedList});
+    message.channel.send({embeds: [embedList]});
   } catch(err) {
     message.channel.send(`No DIY by the name of **${msgArr.slice(1).join(' ')}** found.`);
   }

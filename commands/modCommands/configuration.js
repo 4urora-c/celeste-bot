@@ -15,7 +15,7 @@ module.exports = {
 
       if (msgArr[1].toLowerCase() === 'economy') {
 
-      if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
+      if (message.author.id !== '620196347890499604' && !message.member.permissions.has(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
       if (msgArr.length >= 1) {
         const guilddata = await client.db.config.findOne({
           id: message.guild.id,
@@ -33,7 +33,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully set economy to ${msgArr[2]}!`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           } else if (!guilddata) {
             return message.channel.send('Economy is set to **true**!');
           } else {

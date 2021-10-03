@@ -4,6 +4,7 @@ module.exports = {
   description: 'lookup',
   aliases: 'hex',
   execute: async (client, message) => {
+    console.log(message)
     const msgArr = message.content.split(' ');
     if (!msgArr[1]) return;
     if (msgArr[1].length > 5) {

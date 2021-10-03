@@ -86,7 +86,7 @@ module.exports = {
           .addField('Number Drawn', `${draw}`)
           .addField('You won!', `You won ${(amount + amount * win).toFixed(2)} ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}`)
           .addField('Credits', `You have ${(userdata.coins + (amount * win)).toFixed(2)} ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}`);
-        message.channel.send(rewardMessage);
+        message.channel.send({embeds: [rewardMessage]});
         await client.db.userdata.updateOne({ id: message.author.id, guildID: message.guild.id }, { $inc: { coins: (amount * win) } }, { upsert: true });
       } else {
         const rewardMessage = new MessageEmbed()
@@ -95,8 +95,8 @@ module.exports = {
           .addField('Number Drawn', `${draw}`)
           .addField('You lost!', `You lost ${amount} ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}`)
           .addField('Credits', `You have ${userdata.coins - amount} ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}`);
-        message.channel.send(rewardMessage);
-        await client.db.userdata.updateOne({ id: message.author.id, guildID: message.guild.id }, { $inc: { coins: amount * -1 } }, { upsert: true });
+          message.channel.send({embeds: [rewardMessage]});
+          await client.db.userdata.updateOne({ id: message.author.id, guildID: message.guild.id }, { $inc: { coins: amount * -1 } }, { upsert: true });
       }
     } else {
       message.channel.send('You do not have a profile yet!');

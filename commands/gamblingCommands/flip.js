@@ -41,13 +41,13 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
         .setColor('#5b4194')
         .setDescription(`✅ ${message.author} You got ${Math.floor(flipAmount / 2)} 🪙 ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}!! You now have ${userdata.coins + Math.floor(flipAmount / 2)} 🪙 ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}!`)
-        message.channel.send({embed: embed});
+        message.channel.send({embeds: [embed]});
         await client.db.userdata.updateOne({ id: message.author.id, guildID: message.guild.id }, { $inc: { coins: Math.floor(flipAmount / 2) } }, { upsert: true });
       } else {
         const embed = new Discord.MessageEmbed()
         .setColor('#5b4194')
         .setDescription(`❌ ${message.author} You lost ${flipAmount} 🪙 ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}!! You now only have ${userdata.coins - flipAmount} 🪙 ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'}!`)
-        message.channel.send({embed: embed});
+        message.channel.send({embeds: [embed]});
         await client.db.userdata.updateOne({ id: message.author.id, guildID: message.guild.id }, { $inc: { coins: flipAmount * -1 } }, { upsert: true });
       }
     } else {

@@ -31,7 +31,7 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
         .setColor('GREEN')
         .setDescription(`You have successfully added **${msgArr.slice(2).join(' ')}** to your highlights!`);
-        message.channel.send({embed: embed});
+        message.channel.send({embeds: [embed]});
 
     } else if (msgArr[1] === 'remove') {
       await client.db.userdata.updateOne({ id: message.member.id, guildID: message.guild.id }, {
@@ -44,7 +44,7 @@ module.exports = {
       const doneEmbed = new Discord.MessageEmbed()
       .setColor('GREEN')
       .setDescription(`**${msgArr.slice(2).join(' ')}** has been removed from your highlights!`);
-      message.channel.send({embed: doneEmbed});
+      message.channel.send({embeds: [doneEmbed]});
     } else {
       message.channel.send('You need to specify whether you are adding or removing a highlight!');
     }

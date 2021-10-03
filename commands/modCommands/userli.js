@@ -5,7 +5,7 @@ module.exports = {
   description: 'lookup',
   execute: async (client, message) => {
     const msgArr = message.content.split(' ');
-    if (!message.author.id === '620196347890499604' && !message.member.hasPermission('MANAGE_ROLES')) return;
+    if (!message.author.id === '620196347890499604' && !message.member.permissions.has('MANAGE_ROLES')) return;
     if (!msgArr[1]) {
       message.channel.send('You must provide a name!');
       return;
@@ -21,6 +21,6 @@ module.exports = {
     const embedA = new Discord.MessageEmbed()
     .setColor('#5b4194')
     .setDescription(`__**Lookup matches:**__:\n\n${matches.slice(0, 30).join('\n')}`);
-    message.channel.send({embed: embedA});
+    message.channel.send({embeds: [embedA]});
   },
 };

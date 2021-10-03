@@ -7,7 +7,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
   name: 'reset',
   description: 'remove user data',
-  execute: async (client, message) => {
+  execute: async (client, message, config) => {
     if (message.author.id === "620196347890499604") {
 
     const msgArr = message.content.split(' ');

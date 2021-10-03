@@ -52,8 +52,8 @@ module.exports = {
       { name: 'Music', value: house_music, inline: true }
     )
     console.log(`Search for ${name} successful.`);
-    message.channel.send({embed: embedList});
-    message.channel.send({embed: houseEmbed});
+    message.channel.send({embeds: [embedList]});
+    message.channel.send({embeds: [houseEmbed]});
   } catch(err) {
     message.channel.send(`No villager by the name of **${msgArr.slice(1).join('')}** found.`);
   }

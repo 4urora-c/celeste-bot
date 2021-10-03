@@ -28,7 +28,7 @@ module.exports = {
             .setColor('#5b4194')
             .setDescription(`**${description}** has been set as your island name!`);
           message.channel.send({
-            embed: embedA,
+            embeds: [embedA],
           });
           client.db.islandinfo.updateOne({
             id: message.author.id,
@@ -84,7 +84,7 @@ module.exports = {
             .setColor('#5b4194')
             .setDescription(`**${description}** has been set as your island name!`);
           message.channel.send({
-            embed: embedA,
+            embeds: [embedA],
           });
         }
       } else {
@@ -119,7 +119,7 @@ module.exports = {
           .setColor('#5b4194')
           .setDescription(`**DA-${msgArr[2].slice(0, 4)}-${msgArr[2].slice(4, 8)}-${msgArr[2].slice(8, 12)}** has been set as your dream address!`);
         message.channel.send({
-          embed: embedA,
+          embeds: [embedA],
         });
         client.db.islandinfo.updateOne({
           id: message.author.id,
@@ -147,7 +147,7 @@ module.exports = {
           .setColor('#5b4194')
           .setDescription(`**DA-${msgArr[2].slice(0, 4)}-${msgArr[2].slice(4, 8)}-${msgArr[2].slice(8, 12)}** has been set as your dream address!`);
         message.channel.send({
-          embed: embedA,
+          embeds: [embedA],
         });
       }
     } else if (msgArr[1] === 'name') {
@@ -180,7 +180,7 @@ module.exports = {
         const embedA = new Discord.MessageEmbed()
           .setColor('#5b4194')
           .setDescription(`Your name has been set to **${msgArr.slice(2).join(' ')}**!`);
-        message.channel.send({ embed: embedA });
+        message.channel.send({ embeds: [embedA] });
       } else {
         message.channel.send('You must provide a name!');
       }

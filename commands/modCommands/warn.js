@@ -9,7 +9,7 @@ module.exports = {
   usage: 'warn <user> <reason>',
   permissions: true,
   execute: async (client, message, config) => {
-    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.hasPermission(['ADMINISTRATOR']))) { return message.reply('You\'re not allowed to use this command!'); }
+    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has(['ADMINISTRATOR']))) { return message.reply('You\'re not allowed to use this command!'); }
     message.channel.bulkDelete(1);
 
     const msgArr = message.content.split(' ');
@@ -47,7 +47,7 @@ module.exports = {
       const embed = new Discord.MessageEmbed()
       .setColor('RED')
       .setDescription(`**${targetUser.user.tag}** has been banned for **${reason}**`)
-      return message.channel.send({embed: embed});
+      return message.channel.send({embeds: [embed]});
     } else {
       return message.channel.send('This user cannot be banned!')
     }

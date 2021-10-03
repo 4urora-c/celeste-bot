@@ -10,7 +10,7 @@ module.exports = {
   execute: async (client, message, config) => {
     const msgArr = message.content.split(' ');
     try {
-    if(message.author.id === '620196347890499604' || message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id)) || message.member.hasPermission('ADMINISTRATOR')) {
+    if(message.author.id === '620196347890499604' || message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id)) || message.member.permissions.has('ADMINISTRATOR')) {
     const list = await client.db.islandinfo.find().toArray();
     if (!msgArr[1]) {
       message.channel.send('You must provide a name!');
@@ -42,7 +42,7 @@ module.exports = {
     });
     const listEmbed = new Discord.MessageEmbed();
     listEmbed.addField('Lookup Matches', `${matches.slice(0, 30).join('\n')}`);
-    message.channel.send({embed: listEmbed}).catch((error) => {
+    message.channel.send({embeds: [listEmbed]}).catch((error) => {
       message.channel.send('There are too many matches to display.');
     });
   } else {

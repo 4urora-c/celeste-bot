@@ -43,7 +43,7 @@ module.exports = {
           .setColor('#5b4194')
           .setDescription(`**SW-${msgArr[2].slice(0, 4)}-${msgArr[2].slice(4, 8)}-${msgArr[2].slice(8, 12)}** has been set as your friend code!`);
         message.channel.send({
-          embed: embedA
+          embeds: [embedA]
         });
         client.db.islandinfo.updateOne({
           id: message.author.id
@@ -71,7 +71,7 @@ module.exports = {
           .setColor('#5b4194')
           .setDescription(`**SW-${msgArr[2].slice(0, 4)}-${msgArr[2].slice(4, 8)}-${msgArr[2].slice(8, 12)}** has been set as your friend code!`);
         message.channel.send({
-          embed: embedA
+          embeds: [embedA]
         });
       }
       try {
@@ -107,13 +107,13 @@ module.exports = {
         try {
           if (userdata.moreinfo[1].name === 'Friend Code') {
             embed.addField('Friend Code:', userdata.moreinfo[1].description);
-            message.channel.send(embed);
+            message.channel.send({embeds : [embed]});
           } else if (userdata.moreinfo[0].name === 'Friend Code') {
             embed.addField('Friend Code:', userdata.moreinfo[0].description);
-            message.channel.send(embed);
+            message.channel.send({embeds : [embed]});
           } else if (userdata.moreinfo[2].name === 'Friend Code') {
             embed.addField('Friend Code:', userdata.moreinfo[2].description);
-            message.channel.send(embed);
+            message.channel.send({embeds : [embed]});
           } else {
             message.channel.send('Please set the friend code first!')
           }

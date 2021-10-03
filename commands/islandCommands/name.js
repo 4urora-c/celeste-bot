@@ -40,7 +40,7 @@ module.exports = {
       const embedA = new Discord.MessageEmbed()
         .setColor('#5b4194')
         .setDescription(`Your name has been set to **${msgArr.slice(1).join(' ')}**!`);
-      message.channel.send({ embed: embedA });
+      message.channel.send({ embeds: [embedA] });
     } else {
       message.channel.send('You must provide a name!');
     }

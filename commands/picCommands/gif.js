@@ -47,7 +47,7 @@ module.exports = {
           .addField("Error Log:", err, true)
           .setTimestamp()
           .setFooter("I\'m a bot using discord.js!");
-        message.reply(gifCrash);
+        message.reply({embeds: [gifCrash]});
         console.log(`Giphy Error: ${err}`);
       });
   },

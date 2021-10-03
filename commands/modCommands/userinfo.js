@@ -6,7 +6,7 @@ module.exports = {
   description: 'get user info',
   execute: async (client, message) => {
     const msgArr = message.content.split(' ');
-    if (message.author.id === '620196347890499604' || message.member.hasPermission('MANAGE_ROLES')) {
+    if (message.author.id === '620196347890499604' || message.member.permissions.has('MANAGE_ROLES')) {
     const user = message.mentions.users.first() || client.users.cache.get(msgArr[1]) || message.author;
     const userroles = `<@&${message.guild.member(user)._roles.join('>\n <@&')}>`;
     const listEmbed = new Discord.MessageEmbed();

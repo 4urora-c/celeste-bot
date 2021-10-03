@@ -11,7 +11,7 @@ module.exports = {
   usage: 'reactrole',
   execute: async (client, message, config) => {
     const msgArr = message.content.split(' ');
-    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.hasPermission(['ADMINISTRATOR']))) { return message.reply('You\'re not allowed to use this command!'); }
+    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has(['ADMINISTRATOR']))) { return message.reply('You\'re not allowed to use this command!'); }
     let args = msgArr.slice(1).join(' ').split(', ');
     let name = args[0];
     let ts;
@@ -47,7 +47,7 @@ module.exports = {
         return message.channel.send('There was an error while creating the embed footer.');
       }
       }
-    const reactMessage = await message.channel.send(embed);
+    const reactMessage = await message.channel.send({embeds: [embed]});
     message.delete();
 
     const guildRole = client.reactrolelocal.find((roleGuild) => roleGuild.id === message.guild.id);

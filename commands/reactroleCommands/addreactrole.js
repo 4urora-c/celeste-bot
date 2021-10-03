@@ -12,7 +12,7 @@ module.exports = {
     let currentBotMessage;
     message.delete();
     const msgArr = message.content.split(' ');
-        if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.hasPermission(['ADMINISTRATOR']))) { return message.reply('You\'re not allowed to use this command!'); }
+        if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has('ADMINISTRATOR'))) { return message.reply('You\'re not allowed to use this command!'); }
     if (msgArr.length === 2) {
       if (msgArr[1]) {
         await message.channel.messages.fetch(msgArr[1]);
@@ -63,7 +63,7 @@ module.exports = {
                         roleName: role.name,
                         emoji: selectedEmoji,
                       };
-                      reactionMessage.edit(reactionEmbed);
+                      reactionMessage.edit({ embeds: [reactionEmbed]});
                       console.log(reactRoleObj.roles);
                       await client.db.reactrole.updateOne(
                         { id: msgArr[1] },

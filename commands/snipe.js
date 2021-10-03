@@ -17,6 +17,7 @@ module.exports = {
  			 .setAuthor(msg.author.tag, msg.author.avatarURL({ dynamic: true }) + "said: ")
  			 .setDescription(msg.content);
 
- 		 message.channel.send({ embed: embed }).catch(err => console.error(err));
+        return message.channel.send({embeds: [embed]})
+        .catch(err => console.error(err));
   },
 };

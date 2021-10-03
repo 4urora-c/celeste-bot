@@ -38,7 +38,7 @@ module.exports = {
     { name: 'Art style:', value: art_style, inline: true },
     { name: 'Description: ', value: description}
   );
-    message.channel.send({embed: embedList});
+    message.channel.send({embeds: [embedList]});
     if (has_fake === true) {
       const { fake_image_url, authenticity } = responsejson;
       const fakeEmbed = new Discord.MessageEmbed();
@@ -47,7 +47,7 @@ module.exports = {
       fakeEmbed.addFields(
         { name: 'Authenticity', value: authenticity }
       );
-      message.channel.send({embed: fakeEmbed});
+      message.channel.send({embeds: [fakeEmbed]});
     }
     console.log(`Search for ${name} successful.`);
   } catch(err) {

@@ -7,7 +7,7 @@ module.exports = {
   aliases: 'k',
   usage: 'kick/alias <user> <reason (optional)>',
   execute: async (client, message, config) => {
-    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.hasPermission(['ADMINISTRATOR']))) { return message.reply('You\'re not allowed to use this command!'); }
+    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has(['ADMINISTRATOR']))) { return message.reply('You\'re not allowed to use this command!'); }
 
     const msgArr = message.content.split(' ');
     const member = message.mentions.members.first() || message.guild.members.cache.get(msgArr[1]);

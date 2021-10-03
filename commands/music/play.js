@@ -12,7 +12,7 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
         .setColor('RED')
         .setDescription('You are not connected to the same voice channel as Celeste!')
-        return message.channel.send({embed: embed});
+        return message.channel.send({embeds: [embed]});
       }
     }
     distube.play(message, msgArr.slice(1).join(' '));
