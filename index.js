@@ -111,12 +111,12 @@ fs.readdir('./events/', async (err, files) => {
   }
   const importAllFiles = async (dir) => {
     return new Promise((resolve, reject) => {
-      fs.readdir(dir, (err, files) => {
+      fs.readdir(dir, async (err, files) => {
         if (err) {
           console.log(err);
           resolve(files);
         }
-        files.forEach((file) => {
+        for (const file of files) {
           if (file.endsWith('.js')) {
             const props = require(`${dir}${file}`);
             console.log(`Successfully loaded ${props.name}`);
@@ -132,9 +132,9 @@ fs.readdir('./events/', async (err, files) => {
             client.commands.set(props.name, props);
             client.commands.set(props.aliases, props);
           } else if (fs.lstatSync(`${dir}${file}/`).isDirectory()) {
-            importAllFiles(`${dir}${file}/`);
+            await importAllFiles(`${dir}${file}/`);
           }
-        });
+        }
         resolve(files);
       });
     });
@@ -153,7 +153,6 @@ fs.readdir('./events/', async (err, files) => {
       console.error(error);
     }
   })();
-
   files.forEach((file) => {
     if (!file.endsWith('.js')) return;
     const evt = require(`./events/${file}`);
