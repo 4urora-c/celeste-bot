@@ -93,60 +93,67 @@ client.on('messageDelete', messageDelete => {
 });
 
 client.on('interactionCreate', async interaction => {
-	if (!interaction.isCommand()) return;
-	const command = client.commands.get(interaction.commandName);
-	if (!command) return;
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		if (error) console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-	}
+  if (!interaction.isCommand()) return;
+  const command = client.slashCommands.get(interaction.commandName);
+  if (!command) return;
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    if (error) console.error(error);
+    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+  }
 });
 
-fs.readdir('./events/', (err, files) => {
+fs.readdir('./events/', async (err, files) => {
   if (err) {
     console.error();
     return;
   }
-  const importAllFiles = (dir) => {
-    fs.readdir(dir, (err, files) => {
-      if (err) {
-        console.log(err);
-        return files;
-      }
-      files.forEach((file) => {
-        if (file.endsWith('.js')) {
-          const props = require(`${dir}${file}`);
-          console.log(`Successfully loaded ${props.name}`);
-          if (props.data) {
-            commands.push(props.data.toJSON());
-            client.slashCommands.set(props.data.name, props)
-          }
-          client.commands.set(props.name, props);
-          client.commands.set(props.aliases, props);
-        } else if (fs.lstatSync(`${dir}${file}/`).isDirectory()) {
-          importAllFiles(`${dir}${file}/`);
+  const importAllFiles = async (dir) => {
+    return new Promise((resolve, reject) => {
+      fs.readdir(dir, (err, files) => {
+        if (err) {
+          console.log(err);
+          resolve(files);
         }
+        files.forEach((file) => {
+          if (file.endsWith('.js')) {
+            const props = require(`${dir}${file}`);
+            console.log(`Successfully loaded ${props.name}`);
+            if (props.data) {
+              console.log(props.data)
+              client.slashCommands.set(props.data.name, props);
+              try {
+                commands.push(props.data.toJSON());
+              } catch {
+                commands.push(props.data);
+              }
+            }
+            client.commands.set(props.name, props);
+            client.commands.set(props.aliases, props);
+          } else if (fs.lstatSync(`${dir}${file}/`).isDirectory()) {
+            importAllFiles(`${dir}${file}/`);
+          }
+        });
+        resolve(files);
       });
-      return files;
     });
   };
+  await importAllFiles('./commands/');
   (async () => {
-  	try {
-  		console.log('Started refreshing application (/) commands.');
+    try {
+      console.log('Started refreshing application (/) commands.');
+      await rest.put(
+        Routes.applicationGuildCommands(clientId, guildId),
+        { body: commands },
+      );
 
-  		await rest.put(
-  			Routes.applicationGuildCommands(clientId, guildId),
-  			{ body: commands },
-  		);
-
-  		console.log('Successfully reloaded application (/) commands.');
-  	} catch (error) {
-  		console.error(error);
-  	}
+      console.log('Successfully reloaded application (/) commands.');
+    } catch (error) {
+      console.error(error);
+    }
   })();
-  importAllFiles('./commands/');
+
   files.forEach((file) => {
     if (!file.endsWith('.js')) return;
     const evt = require(`./events/${file}`);
