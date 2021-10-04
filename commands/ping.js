@@ -5,6 +5,6 @@ module.exports = {
         .setName('ping')
         .setDescription('Replies with pong'),
         async execute(interaction) {
-        interaction.reply({ content: 'Pong' })
+        interaction.reply({ content: `Latency is ${Date.now() - interaction.createdTimestamp}ms.` })
     }
 };
