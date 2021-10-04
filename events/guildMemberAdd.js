@@ -1,11 +1,14 @@
 /* eslint-disable max-len */
 const generateWelcome = require('../utils/generateWelcome');
-
+const Discord = require('discord.js')
 module.exports = async (client, distube, member) => {
-  const attachment = await generateWelcome(member.user, member.guild);
+  //const attachment = await generateWelcome(member.user, member.guild);
   const welcomeChannel = member.guild.channels.cache.get(client.guildConfig[member.guild.id] ? client.guildConfig[member.guild.id].channels.welcomeChannel : null);
   if (welcomeChannel) {
-    welcomeChannel.send(attachment).catch((error) => {
+    const embed = new Discord.MessageEmbed()
+    .setImage('https://cdn.discordapp.com/attachments/766679330524233779/823161183753863188/image0.png')
+    .setDescription(`Welcome **${member.user.username}#${member.user.discriminator}** to **${member.guild.name}**!`)
+    welcomeChannel.send({embeds: [embed]}).catch((error) => {
       welcomeChannel.send('Error sending welcome image.');
       console.log(error.stack);
     });

@@ -3,6 +3,8 @@ require('dotenv-flow').config();
 const Discord = require('discord.js');
 const fs = require('fs');
 const DisTube = require('distube');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
 
 const token = process.env.BOT_TOKEN;
 const distubeListeners = require('./utils/music/distubeListeners');
@@ -25,6 +27,9 @@ const client = new Discord.Client({
   ]
 });
 client.commands = new Discord.Collection();
+client.slashCommands = new Discord.Collection();
+const commands = [];
+const rest = new REST({ version: '9' }).setToken(token);
 
 const distube = new DisTube(client, {
   searchSongs: true,
@@ -87,34 +92,61 @@ client.on('messageDelete', messageDelete => {
   }
 });
 
-
-
-const importAllFiles = (dir) => {
-  fs.readdir(dir, (err, files) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    files.forEach((file) => {
-      if (file.endsWith('.js')) {
-        const props = require(`${dir}${file}`);
-        console.log(`Successfully loaded ${props.name}`);
-        client.commands.set(props.name, props);
-        client.commands.set(props.aliases, props);
-      } else if (fs.lstatSync(`${dir}${file}/`).isDirectory()) {
-        importAllFiles(`${dir}${file}/`);
-      }
-    });
-  });
-};
-
-importAllFiles('./commands/');
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isCommand()) return;
+	const command = client.commands.get(interaction.commandName);
+	if (!command) return;
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		if (error) console.error(error);
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	}
+});
 
 fs.readdir('./events/', (err, files) => {
   if (err) {
     console.error();
     return;
   }
+  const importAllFiles = (dir) => {
+    fs.readdir(dir, (err, files) => {
+      if (err) {
+        console.log(err);
+        return files;
+      }
+      files.forEach((file) => {
+        if (file.endsWith('.js')) {
+          const props = require(`${dir}${file}`);
+          console.log(`Successfully loaded ${props.name}`);
+          if (props.data) {
+            commands.push(props.data.toJSON());
+            client.slashCommands.set(props.data.name, props)
+          }
+          client.commands.set(props.name, props);
+          client.commands.set(props.aliases, props);
+        } else if (fs.lstatSync(`${dir}${file}/`).isDirectory()) {
+          importAllFiles(`${dir}${file}/`);
+        }
+      });
+      return files;
+    });
+  };
+  (async () => {
+  	try {
+  		console.log('Started refreshing application (/) commands.');
+
+  		await rest.put(
+  			Routes.applicationGuildCommands(clientId, guildId),
+  			{ body: commands },
+  		);
+
+  		console.log('Successfully reloaded application (/) commands.');
+  	} catch (error) {
+  		console.error(error);
+  	}
+  })();
+  importAllFiles('./commands/');
   files.forEach((file) => {
     if (!file.endsWith('.js')) return;
     const evt = require(`./events/${file}`);
@@ -123,7 +155,10 @@ fs.readdir('./events/', (err, files) => {
     client.on(evtName, (...args) => evt(client, distube, ...args));
   });
 });
-
+const clientId = '821212153075073054';
+const guildId = '821217299058524170';
+const testServer = client.guilds.cache.get(guildId)
+console.log(testServer ? testServer.commands.fetch() : 'No server found')
 client.login(token);
 
 module.exports = client;

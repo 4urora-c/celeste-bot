@@ -61,7 +61,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully added dj permissions to ${target}`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           } else {
             config.permissions.dj.splice(exists, 1);
             client.db.config.updateOne({ id: message.guild.id }, {
@@ -72,7 +72,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully removed permissions for dj from ${target}`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           }
         } else {
           message.channel.send('Specified target not found!');
@@ -95,7 +95,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully added permissions for giveaways to ${target}`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           } else {
             config.permissions.giveaways.splice(exists, 1);
             client.db.config.updateOne({ id: message.guild.id }, {
@@ -106,7 +106,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully removed permissions for giveaways from ${target}`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           }
         } else {
           message.channel.send('Specified target not found!');
@@ -130,7 +130,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully added permissions for moderation to ${target}`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           } else {
             config.permissions.moderation.splice(exists, 1);
             client.db.config.updateOne({ id: message.guild.id }, {
@@ -141,7 +141,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully removed permissions for moderation from ${target}`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           }
         } else {
           message.channel.send('Specified target not found!');
@@ -173,7 +173,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully set the levels channel to ${targetChannel}`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           } else {
             message.channel.send('You can only specify channels within this guild!');
           }
@@ -206,7 +206,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully set the purchase logging channel to ${targetChannel}`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           } else {
             message.channel.send('You can only specify channels within this guild!');
           }
@@ -222,7 +222,7 @@ module.exports = {
           const doneEmbed = new Discord.MessageEmbed()
           .setColor('#5b4194')
           .setDescription('Purchase logging channel has been removed.');
-          message.channel.send({embed: doneEmbed});
+          message.channel.send({embeds: [doneEmbed]});
         } else {
           message.channel.send('Specified channel not found!');
         }
@@ -266,7 +266,7 @@ module.exports = {
           const embedA = new Discord.MessageEmbed()
         .setColor('#5b4194')
         .setDescription(`Currency name has been set to **${msgArr.slice(2).join(' ')}**!`);
-        message.channel.send({embed: embedA });
+        message.channel.send({embeds: [embedA]});
 
         } else {
           message.channel.send('You must indicate a name!');
@@ -297,7 +297,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully set the welcome channel to ${targetChannel}`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           } else {
             message.channel.send('You can only specify channels within this guild!');
           }
@@ -333,9 +333,7 @@ module.exports = {
             } catch (err) {
               return message.channel.send('That is not a valid image!')
             }
-            return message.channel.send({
-              embed: embed
-            });
+            return message.channel.send({embeds: [embed]});
           } else {
             return message.channel.send('No welcome image has been set!');
           }
@@ -359,9 +357,7 @@ module.exports = {
           } catch (err) {
             return message.channel.send('That is not a valid image!')
           }
-          message.channel.send({
-            embed: embed
-          });
+          message.channel.send({embeds: [embed]});
         } else if (msgArr[2].toLowerCase() === 'remove') {
           client.db.config.updateOne({
             id: message.guild.id
@@ -375,7 +371,7 @@ module.exports = {
           const doneembed = new Discord.MessageEmbed()
           .setColor('#5b4194')
           .setDescription('Welcome image has been removed!');
-          message.channel.send({embed: doneembed})
+          message.channel.send({embeds: [doneembed]})
         } else {
           message.channel.send('You must specify an image url!');
         }
@@ -403,7 +399,7 @@ module.exports = {
           const embedA = new Discord.MessageEmbed()
         .setColor('#5b4194')
         .setDescription(`Guild role has been set to **${description.length === 18 ? `<@&${description}>` : description}**!`);
-        message.channel.send({embed: embedA });
+        message.channel.send({embeds: [embedA]});
           client.db.islandinfo.updateOne(
             { guildid: message.guild.id },
             {
@@ -429,7 +425,7 @@ module.exports = {
         const embedA = new Discord.MessageEmbed()
         .setColor('#7cdda5')
         .setDescription(`Guild role has been set to **<@&${item.description}>**`);
-        message.channel.send({embed: embedA });
+        message.channel.send({embeds: [embedA]});
         }
       } else {
         message.channel.send('You don\'t have permission to run this command.');
@@ -451,9 +447,7 @@ module.exports = {
           } catch (err) {
             return message.channel.send('That is not a valid image!')
           }
-          return message.channel.send({
-            embed: embed
-          });
+          return message.channel.send({embeds: [embed]});
         } else {
           return message.channel.send('No leaderboard background has been set!');
         }
@@ -477,9 +471,7 @@ module.exports = {
         } catch (err) {
           return message.channel.send('That is not a valid image!')
         }
-        message.channel.send({
-          embed: embed
-        });
+        message.channel.send({embeds: [embed]});
       } else if (msgArr[2].toLowerCase() === 'remove') {
         client.db.config.updateOne({
           id: message.guild.id
@@ -538,7 +530,7 @@ module.exports = {
         const embedA = new Discord.MessageEmbed()
       .setColor('#5b4194')
       .setDescription(`Friend code requirement has been set to **${msgArr[2]}**!`);
-      message.channel.send({embed: embedA });
+      message.channel.send({embeds: [embedA]});
 
       } else {
         message.channel.send('You must indicate true / false!');
@@ -569,7 +561,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully set DJ mode to ${msgArr[2]}!`);
-            message.channel.send({embed: embed});
+            message.channel.send({embeds: [embed]});
           } else if (!guilddata) {
             return message.channel.send('DJ mode is set to **true**!');
           } else {
@@ -595,7 +587,7 @@ module.exports = {
           const embedA = new Discord.MessageEmbed()
         .setColor('#5b4194')
         .setDescription(`Message deletion log has been set to **${msgArr[2]}**!`);
-        message.channel.send({embed: embedA });
+        message.channel.send({embeds: [embedA]});
 
         } else {
           message.channel.send('You must indicate true / false!');
@@ -604,7 +596,7 @@ module.exports = {
       const embed = new Discord.MessageEmbed()
       .setColor('RED')
       .setDescription('**Configuration not found. Available configurations are:** \neconomy\ntogglerole\ncooldown\ntogglefc\nfcrole\nprefix\ndjperms\ndjmode\nmodperms\ngaperms\nlevellog\npurchaselog\nwelcomechannel\nwelcomeimage\nsetlbimage')
-      return message.channel.send({embed: embed})
+      return message.channel.send({embeds: [embed]})
 
   }
   }

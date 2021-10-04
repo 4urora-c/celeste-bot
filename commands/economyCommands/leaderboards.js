@@ -4,8 +4,9 @@
 /* eslint-disable no-await-in-loop */
 
 const Discord = require('discord.js');
-const Canvas = require('canvas');
-
+//const Canvas = require('canvas');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
 module.exports = {
   name: 'leaderboards',
   description: 'Print leaderboards',
@@ -29,33 +30,70 @@ module.exports = {
   }
 }
 
-  if (msgArr[1] !== 'levels') {
+  if (msgArr[1]) {
     if (client.leaderboards) {
       clearInterval(client.leaderboards);
     }
     const data = await client.db.userdata.find({guildID: message.guild.id}).toArray();
     const overall = data.sort((a, b) => b.coins - a.coins).slice(0 + page * 10, 10 + page * 10);
 
-    Canvas.registerFont('fonts/Nexa Bold.otf', { family: 'NexaBold', style: 'Heavy', weight: 'Normal' });
-    const canvas = Canvas.createCanvas(589, 916);
-    const ctx = canvas.getContext('2d');
+    //Canvas.registerFont('fonts/Nexa Bold.otf', { family: 'NexaBold', style: 'Heavy', weight: 'Normal' });
+    //const canvas = Canvas.createCanvas(589, 916);
+  //  const ctx = canvas.getContext('2d');
     const guilddata2 = await client.db.config.findOne({
       id: message.guild.id,
     });
-    let background = await Canvas.loadImage(guilddata2.lbimage ? guilddata2.lbimage : 'img/leaderboards/leaderboardsbg1.png');
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+    console.log(data)
+  //  let background = await Canvas.loadImage(guilddata2.lbimage ? guilddata2.lbimage : 'img/leaderboards/leaderboardsbg1.png');
+  //  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-    background = await Canvas.loadImage('img/leaderboards/leaderboards1.png');
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+  //  background = await Canvas.loadImage('img/leaderboards/leaderboards1.png');
+  //  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
     let i = 0;
+    let content = '';
     const guilddata = await client.db.islandinfo.findOne({
       guildid: message.guild.id,
     });
     if (guilddata2.economy === 'false') return message.channel.send('Economy is disabled on this guild!');
+  /*  for(v<=data.length) {
+      if (data[v].id === currentmember) {
+        content += `Your position: **${v+1} / ${data.length}** \n\n`;
+      }
+      v++;
+    }*/
+    function fn() {
+      try {
+        for(v=0;v<=data.length;v++) {
+          if (data[v].id === message.member.id) {
+            return v+1;
+          }
+        }
+    } catch(err) {
+      return 'N/A'
+    }
+    }
+    const memberRank = fn();
     for (const user of overall) {
       const currentUser = message.guild.members.cache.get(user.id);
-      // Print Name
+      if (i < 11) {
+        i++;
+      } else {
+        break;
+      }
+      let badge = '';
+      if (i === 1) {
+        badge += '🥇';
+      } else if (i === 2) {
+        badge += '🥈';
+      } else if (i === 3) {
+        badge += '🥉';
+      } else {
+        badge += '🎗️';
+      }
+
+      content += `${badge} **${i}.** ${currentUser ? `${currentUser.displayName}` : 'Member Left'} - ${`${user.coins} **${guilddata.currencyname ? guilddata.currencyname : 'Bells'}**`} `+ '\n';
+      /* // Print Name
       ctx.font = '32px NexaBold';
       ctx.fillStyle = 'rgb(236, 229, 216)';
       ctx.fillText(currentUser ? currentUser.displayName : 'Member Left', 147, 154 + i * 78.2);
@@ -68,15 +106,18 @@ module.exports = {
       // Print Rank
       ctx.font = '34px NexaBold';
       ctx.fillStyle = 'rgb(39, 39, 39)';
-      ctx.fillText(`#${i + 1 + page * 10}`, 30, 170 + i * 78.2);
+      ctx.fillText(`#${i + 1 + page * 10}`, 30, 170 + i * 78.2);*/
 
-      i += 1;
     }
-    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'leaderboard.png');
-    message.channel.send({files: [
-      { file: attachment }
-  ]});
-  } else if (msgArr[1] === 'levels') {
+    const embed = new Discord.MessageEmbed()
+    .setThumbnail(message.guild.iconURL())
+    .setDescription(`Your Position: **${memberRank} / ${data.length}** \n\n**Leaderboard**\n`+ content)
+    .setTimestamp()
+    .setTitle(`Leaderboard - Top 10 (${guilddata.currencyname ? guilddata.currencyname : 'Bells'})`)
+    message.channel.send({embeds: [embed]})
+    //const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'leaderboard.png');
+  //  message.channel.send({files: [{ file: attachment }]});
+} /*else if (msgArr[1] === 'levels') {
     if (client.leaderboards) {
       clearInterval(client.leaderboards);
     }
@@ -123,7 +164,7 @@ module.exports = {
     message.channel.send({files: [
       { file: attachment }
   ]});
-  }
+}*/
 
   },
 };
