@@ -39,6 +39,9 @@ const status = (queue) => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filt
 distubeListeners(distube, status);
 
 client.on('ready', () => {
+  permissions.refreshCommandPermissionsClient(client);
+  //permissions.refreshCommandPermissionsGlobal(client);  //for global permissions, means private dms, all servers etc.
+
   client.guilds.cache.forEach((server) => {
     console.log(`${server.name} (id: ${server.id})`);
   });
