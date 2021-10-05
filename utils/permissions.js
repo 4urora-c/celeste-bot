@@ -1,4 +1,4 @@
-const commandsToSetPermissions = ['banslash'];
+const commandsToSetPermissions = ['banslash', 'reactionrole'];
 
 
 module.exports = {
