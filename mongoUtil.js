@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const mongodburi  = process.env.DATABASE_STRING
+const mongodburi  = 'mongodb://localhost:27017/databaseName'
 
 const uri = mongodburi;
 const client = new MongoClient(uri, {autoIndex: false});
