@@ -5,8 +5,9 @@ const fs = require('fs');
 const DisTube = require('distube');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
+const config = require('./config.js');
 
-const token = process.env.BOT_TOKEN;
+const token = config.token;
 const distubeListeners = require('./utils/music/distubeListeners');
 const permissions = require('./utils/permissions');
 const client = new Discord.Client({
@@ -172,8 +173,8 @@ fs.readdir('./events/', async (err, files) => {
     client.on(evtName, (...args) => evt(client, distube, ...args));
   });
 });
-const clientId = '821212153075073054';
-const guildId = '821217299058524170';
+const clientId = '816691308353290280';
+const guildId = '808040418221883402';
 const testServer = client.guilds.cache.get(guildId)
 console.log(testServer ? testServer.commands.fetch() : 'No server found')
 client.login(token);
