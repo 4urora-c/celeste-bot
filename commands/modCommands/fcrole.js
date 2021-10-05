@@ -6,6 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('friendcoderole')
     .setDescription('Sets the role obtained by setting information')
+    .setDefaultPermission(false)
     .addRoleOption(option =>
       option
         .setName('target')

@@ -10,6 +10,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('island')
     .setDescription('Check island info with this command')
+    .setDefaultPermission(false)
     .addUserOption(option =>
       option
         .setName('target')

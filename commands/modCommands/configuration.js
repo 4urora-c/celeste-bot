@@ -10,6 +10,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('config')
     .setDescription('Server configuration command')
+    .setDefaultPermission(false)
     .addStringOption(option =>
       option
         .setName('config')

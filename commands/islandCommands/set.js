@@ -6,6 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('set')
     .setDescription('Add your information to the Celeste database')
+    .setDefaultPermission(false)
     .addStringOption(option =>
       option
         .setName('setting')
@@ -47,7 +48,7 @@ module.exports = {
           upsert: true,
         });
       } else {
-        let moreinfo; 
+        let moreinfo;
         moreinfo.description = info;
         interaction.client.db.islandinfo.updateOne({
           id: interaction.member.id,

@@ -8,6 +8,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('add')
     .setDescription('Add currency to users or roles')
+    .setDefaultPermission(false)
     .addMentionableOption(option =>
       option
         .setName('target')
