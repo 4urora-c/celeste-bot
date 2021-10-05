@@ -8,7 +8,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('add')
     .setDescription('Use this when you are ready to join the rest of the server')
-    .addStringOption(option =>
+    .addMentionableOption(option =>
       option
         .setName('target')
         .setDescription('The target user(s) to add currency to')
@@ -17,21 +17,28 @@ module.exports = {
       option
         .setName('amount')
         .setDescription('The amount of currency to add')
-        .setRequired(true)),
+        .setRequired(true))
+     .addStringOption(option =>
+       option
+        .setName('override')
+        .setDescription('The amount of currency to add')),
   async execute(interaction) {
     const guilddata = await interaction.client.db.config.findOne({
       id: interaction.guild.id,
     });
     if (!guilddata.economy || guilddata.economy === 'true') {
-    let tar = interaction.options.getString('target')
+    let target = interaction.options.getMentionable('target')
     let amount = parseInt(interaction.options.getString('amount'), 10);
     const guilddata = await interaction.client.db.islandinfo.findOne({ guildid: interaction.guild.id });
-    let target = tar.mentions.members.first() || interaction.guild.members.cache.get(tar) || tar.mentions.roles.first();
     if (isNaN(amount)) {
       interaction.reply('Enter a valid amount to add');
       return;
     }
-    if (tar === 'premium') {
+    const premium = interaction.options.getString('override')
+    if (premium && premium === 'premium') {
+      target = 'premium'
+    }
+    if (target === 'premium') {
       target = 'premium users'
       let i = 0;
       const user = await interaction.client.db.islandinfo.find().toArray()
@@ -46,7 +53,6 @@ module.exports = {
           try {
           if (check.hasPremium === 'true') {
             i ++;
-            console.log(check.id)
            interaction.client.db.userdata.updateOne({id: check.id, guildID: interaction.guild.id}, {$inc: {coins: amount}}, {upsert: true})
          } } catch(err) {}
         })
