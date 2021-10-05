@@ -1,5 +1,5 @@
 const commandsToSetPermissions = ['ban, reactionrole'];
-const adminCommands = ['refresh', 'ban'];
+const adminCommands = ['refresh', 'ban', 'reactionrole'];
 const basicdeny = ['join'];
 const basicallow = ['leaderboard', 'profile']
 module.exports = {

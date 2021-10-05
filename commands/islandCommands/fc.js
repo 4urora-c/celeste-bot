@@ -29,7 +29,7 @@ module.exports = {
       }
 
       const user = await client.db.islandinfo.findOne({
-        id: message.author.id
+        id: message.member.id
       });
       let item;
       if (user) {
@@ -46,7 +46,7 @@ module.exports = {
           embeds: [embedA]
         });
         client.db.islandinfo.updateOne({
-          id: message.author.id
+          id: message.member.id
         }, {
           $set: {
             moreinfo: user.moreinfo,
@@ -56,7 +56,7 @@ module.exports = {
         }, );
       } else {
         client.db.islandinfo.updateOne({
-          id: message.author.id
+          id: message.member.id
         }, {
           $push: {
             moreinfo: {
@@ -95,14 +95,14 @@ module.exports = {
         console.log(err.stack)
         return;
       }
-    } else if (message.mentions.users.first() || client.users.cache.get(msgArr[1]) || message.author) {
-      const user2 = message.mentions.users.first() || client.users.cache.get(msgArr[1]) || message.author;
+    } else if (message.mentions.users.first() || client.users.cache.get(msgArr[1]) || message.member) {
+      const user2 = message.mentions.users.first() || client.users.cache.get(msgArr[1]) || message.member;
       const userdata = await client.db.islandinfo.findOne({
         id: user2.id
       });
       if (userdata) {
         const embed = new Discord.MessageEmbed()
-          .setAuthor(user2.tag, user2.avatarURL())
+          .setmember(user2.tag, user2.avatarURL())
           .setThumbnail(user2.avatarURL());
         try {
           if (userdata.moreinfo[1].name === 'Friend Code') {
