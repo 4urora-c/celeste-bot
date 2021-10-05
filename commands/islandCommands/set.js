@@ -48,7 +48,8 @@ module.exports = {
           upsert: true,
         });
       } else {
-        let moreinfo;
+        let moreinfo = {};
+        let description = info;
         moreinfo.description = info;
         interaction.client.db.islandinfo.updateOne({
           id: interaction.member.id,
