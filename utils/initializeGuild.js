@@ -8,7 +8,7 @@ module.exports = (client, guildID) => {
     permissions: {
       moderation: [],
       giveaways: [],
-      dj: []
+      joinrole: []
     },
     prefix: ';',
     levels: [

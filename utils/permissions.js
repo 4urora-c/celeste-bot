@@ -1,8 +1,8 @@
-const commandsToSetPermissions = ['banslash'];
-
-
+const commandsToSetPermissions = ['ban'];
+const adminCommands = ['refresh', 'ban'];
+const basicdeny = ['join'];
+const basicallow = ['leaderboard', 'profile']
 module.exports = {
-
     async refreshCommandPermissionsClient(client) {
         let guildCounter = 0;
         let commandCounter = 0;
@@ -13,24 +13,69 @@ module.exports = {
                 //console.log(command[comm]);
                 const currentCommand = await currentGuild?.commands.fetch(command[0]);
                 if (commandsToSetPermissions.includes(currentCommand.name)) {
-                    console.log('refreshed permissions in ' + currentGuild.name + " for " + currentCommand.name);
+                    console.log('Refreshed permissions in ' + currentGuild.name + " for " + currentCommand.name);
                     const permissions = [
-                        /* {
+                      /*  {
                             id: currentGuild?.roles.everyone.id,        //paste here ID of administrator
                             type: 'ROLE',
                             permission: false                           //set whether should be able to use or not
-                        }, */
+                        },*/
                         {
                             id: '620196347890499604',
                             type: 'USER',
                             permission: true,
                         },
-                        {
-                            id: '392767855180906506',                   //this is blackcore, can be deleted
-                            type: 'USER',
-                            permission: true,
-                        },
                     ];
+                    const adminperms = [{
+                          id: '620196347890499604',
+                          type: 'USER',
+                          permission: true,
+                      }];
+                    try {
+                    const mod = currentGuild.roles.cache.find(r => r.name.toLowerCase() === 'moderator').id;
+                    if (mod) permissions.push({id: mod, type: 'ROLE', permission: true});
+                  }  catch(e) {}
+                    await currentCommand.permissions.add({ permissions });
+                }
+                if (adminCommands.includes(currentCommand.name)) {
+                    console.log('Refreshed permissions in ' + currentGuild.name + " for " + currentCommand.name);
+                    const permissions = [{
+                          id: '620196347890499604',
+                          type: 'USER',
+                          permission: true,
+                      }];
+                    try {
+                    const admin = currentGuild.roles.cache.find(r => r.name.toLowerCase() === 'admin').id
+                    if (admin) permissions.push({id: admin, type: 'ROLE', permission: true});
+                  }  catch(e) {}
+                    await currentCommand.permissions.add({ permissions });
+                }
+                if (basicdeny.includes(currentCommand.name)) {
+                    console.log('Refreshed permissions in ' + currentGuild.name + " for " + currentCommand.name);
+                    const permissions = [{
+                          id: '620196347890499604',
+                          type: 'USER',
+                          permission: true,
+                      },
+                    {
+                      id: currentGuild.roles.cache.find(r=> r.name.toLowerCase() === 'basic').id,
+                      type: 'ROLE',
+                      permission: false,
+                    }];
+                    await currentCommand.permissions.add({ permissions });
+                }
+                if (basicallow.includes(currentCommand.name)) {
+                    console.log('Refreshed permissions in ' + currentGuild.name + " for " + currentCommand.name);
+                    const permissions = [{
+                          id: '620196347890499604',
+                          type: 'USER',
+                          permission: true,
+                      },
+                    {
+                      id: currentGuild.roles.cache.find(r=> r.name.toLowerCase() === 'basic').id,
+                      type: 'ROLE',
+                      permission: true,
+                    }];
                     await currentCommand.permissions.add({ permissions });
                 }
                 commandCounter++;
@@ -54,16 +99,16 @@ module.exports = {
                             type: 'ROLE',
                             permission: false
                         }, */
-                        {
+                      /*  {
                             id: '392767855180906506',
                             type: 'USER',
                             permission: true,
-                        },
+                        },*/
                     ];
                     // console.log(currentGuild.id);
                     // console.log(currentCommand);
                     let id = currentCommand.id;
-                    //await client.application?.commands.permissions.add({ currentGuild, currentCommand, permissions }); 
+                    //await client.application?.commands.permissions.add({ currentGuild, currentCommand, permissions });
                     await currentGuild.commands.permissions.add({ command: id, permissions: permissions });
                     //currentCommand.permissions.add({ permissions });
                 }
@@ -71,5 +116,4 @@ module.exports = {
             }
         }
     }
-
 }

@@ -42,17 +42,15 @@ module.exports = {
         }
       }
         // end economy
-      } else if (msgArr[1].toLowerCase() === 'djperms') {
-        // start dj perms
+      } else if (msgArr[1].toLowerCase() === 'welcomerole') {
         if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
 
-        const target = message.mentions.roles.first() || message.guild.roles.cache.get(msgArr[2]) || message.mentions.members.first() || message.guild.members.cache.get(msgArr[2]);
-        // return console.log(target)
+        const target = message.mentions.roles.first() || message.guild.roles.cache.get(msgArr[2]);
+
         if (target) {
-          const exists = config.permissions.dj.findIndex((i) => i === target.id);
-          // return console.log(exists)
+          const exists = config.permissions.joinrole.findIndex((i) => i === target.id);
           if (exists < 0) {
-            config.permissions.dj.push(target.id);
+            config.permissions.joinrole.push(target.id);
             client.db.config.updateOne({ id: message.guild.id }, {
               $set: {
                 permissions: config.permissions,
@@ -60,10 +58,10 @@ module.exports = {
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
-            .setDescription(`You have successfully added dj permissions to ${target}`);
+            .setDescription(`You have successfully added ${target} to the join roles.`);
             message.channel.send({embeds: [embed]});
           } else {
-            config.permissions.dj.splice(exists, 1);
+            config.permissions.joinrole.splice(exists, 1);
             client.db.config.updateOne({ id: message.guild.id }, {
               $set: {
                 permissions: config.permissions,
@@ -71,12 +69,12 @@ module.exports = {
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
-            .setDescription(`You have successfully removed permissions for dj from ${target}`);
+            .setDescription(`You have successfully removed ${target} from the join roles.`);
             message.channel.send({embeds: [embed]});
           }
         } else {
           message.channel.send('Specified target not found!');
-        } // end dj perms
+        } //end ga perms
 
       } else if (msgArr[1].toLowerCase() === 'gaperms') { //start ga perms
         if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
@@ -589,16 +587,14 @@ module.exports = {
         .setDescription(`Message deletion log has been set to **${msgArr[2]}**!`);
         message.channel.send({embeds: [embedA]});
 
-        } else {
-          message.channel.send('You must indicate true / false!');
-        }
-    } else {
+      } else {
       const embed = new Discord.MessageEmbed()
       .setColor('RED')
       .setDescription('**Configuration not found. Available configurations are:** \neconomy\ntogglerole\ncooldown\ntogglefc\nfcrole\nprefix\ndjperms\ndjmode\nmodperms\ngaperms\nlevellog\npurchaselog\nwelcomechannel\nwelcomeimage\nsetlbimage')
       return message.channel.send({embeds: [embed]})
 
   }
+}
   }
   },
 };

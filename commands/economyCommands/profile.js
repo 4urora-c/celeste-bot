@@ -4,28 +4,32 @@
 
 const Canvas = require('canvas');
 const Discord = require('discord.js');
-
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
-  name: 'profile',
-  description: 'Print profile',
-  aliases: 'p',
-  execute: async (client, message, config) => {
-    const guilddata = await client.db.islandinfo.findOne({
-      guildid: message.guild.id,
+  data: new SlashCommandBuilder()
+      .setName('profile')
+      .setDescription('Command to check economy profile')
+      .setDefaultPermission(true),
+  async execute(interaction) {
+    const guilddata = await interaction.client.db.islandinfo.findOne({
+      guildid: interaction.guild.id,
     });
-    const guilddata2 = await client.db.config.findOne({
-      id: message.guild.id,
+    const guilddata2 = await interaction.client.db.config.findOne({
+      id: interaction.guild.id,
     });
     if (!guilddata2.economy || guilddata2.economy === 'true') {
-    const userdata = await client.db.userdata.findOne({ id: message.author.id, guildID: message.guild.id });
-    const userdata2 = await client.db.islandinfo.findOne({ id: message.author.id });
+    const userdata = await interaction.client.db.userdata.findOne({ id: interaction.member.id, guildID: interaction.guild.id });
+    const userdata2 = await interaction.client.db.islandinfo.findOne({ id: interaction.member.id });
     if (userdata) {
-      const reference = config.levels.findIndex((level) => level > userdata.exp);
-      const currentExp = userdata.exp - config.levels[reference - 1];
+      const reference = guilddata2.levels.findIndex((level) => level > userdata.exp);
+      const currentExp = userdata.exp - guilddata2.levels[reference - 1];
       const currentLevel = reference;
-      const requiredExp = config.levels[reference] - config.levels[reference - 1];
+      const requiredExp = guilddata2.levels[reference] - guilddata2.levels[reference - 1];
 
-      Canvas.registerFont('fonts/HYWenHei.ttf', { family: 'HYWenHei', style: 'Heavy', weight: 'Normal' });
+    const embed = new Discord.MessageEmbed()
+    .setTitle(`**${interaction.member.displayName}**'s Profile`)
+    .setDescription(`Level: **${currentLevel}** \n\n${currentExp} / **${requiredExp}** exp for the next level\n\nBalance: ${userdata.coins} **${guilddata.currencyname ? guilddata.currencyname : 'Bells'}**`)
+/*      Canvas.registerFont('fonts/HYWenHei.ttf', { family: 'HYWenHei', style: 'Heavy', weight: 'Normal' });
       const canvas = Canvas.createCanvas(700, 300);
       const ctx = canvas.getContext('2d');
 
@@ -81,12 +85,13 @@ module.exports = {
 
       const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.png');
 
-      message.channel.send(`${message.member}'s profile:`, attachment);
+      message.channel.send(`${message.member}'s profile:`, attachment);*/
+      interaction.reply({embeds: [embed]})
     } else {
-      message.channel.send('You do not have a profile yet!');
+      interaction.reply('You do not have a profile yet!');
     }
   } else {
-    return message.channel.send('Economy is disabled on this guild!');
+    return interaction.reply('Economy is disabled on this guild!');
   }
   },
 };

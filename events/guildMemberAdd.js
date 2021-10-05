@@ -13,6 +13,13 @@ module.exports = async (client, distube, member) => {
       console.log(error.stack);
     });
   }
+  const joinrole = client.guildConfig[member.guild.id].permissions.joinrole
+  if (joinrole) {
+    joinrole.forEach(i => {
+      const r = member.guild.roles.cache.get(i)
+      member.roles.add(r)
+    })
+  }
   const currentDate = Date.now();
 
 

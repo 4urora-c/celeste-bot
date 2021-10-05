@@ -5,8 +5,7 @@
 /* eslint-disable max-len */
 const mongoUtil = require('../mongoUtil.js');
 const config = require('../config.js');
-
-module.exports = async (client) => {
+const ready = async (client) => {
   const db = await mongoUtil.connectDB();
   client.db = {};
   client.db.userdata = await db.db().collection(config.collection.userdata);
@@ -18,7 +17,6 @@ module.exports = async (client) => {
   client.db.config = await db.db().collection(config.collection.config);
   client.db.reactrole = await db.db().collection(config.collection.reactrole);
   client.reactrolelocal = await client.db.reactrole.find().toArray();
-
   client.guildConfig = {};
   client.mutes = {};
   client.giveaways = {};
@@ -56,3 +54,4 @@ module.exports = async (client) => {
   client.ready = true;
   console.log('Bot is Ready');
 };
+module.exports = ready;

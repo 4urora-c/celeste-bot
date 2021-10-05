@@ -8,7 +8,7 @@ const { Routes } = require('discord-api-types/v9');
 
 const token = process.env.BOT_TOKEN;
 const distubeListeners = require('./utils/music/distubeListeners');
-
+const permissions = require('./utils/permissions');
 const client = new Discord.Client({
   intents: ["DIRECT_MESSAGES",
     "GUILDS",
@@ -145,16 +145,24 @@ fs.readdir('./events/', async (err, files) => {
   await importAllFiles('./commands/');
   (async () => {
     try {
-      console.log('Started refreshing application (/) commands.');
-      await rest.put(
-        Routes.applicationGuildCommands(clientId, guildId),
-        { body: commands },
-      );
-
-      console.log('Successfully reloaded application (/) commands.');
-    } catch (error) {
-      console.error(error);
-    }
+			if (!guildId) {
+				await rest.put(
+					Routes.applicationCommands(clientId), {
+						body: commands
+					},
+				);
+				console.log('Successfully registered application commands globally');
+			} else {
+				await rest.put(
+					Routes.applicationGuildCommands(clientId, guildId), {
+						body: commands
+					},
+				);
+				console.log('Successfully registered application commands for development guild');
+			}
+		} catch (error) {
+			if (error) console.error(error);
+		}
   })();
   files.forEach((file) => {
     if (!file.endsWith('.js')) return;

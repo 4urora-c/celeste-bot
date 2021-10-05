@@ -54,12 +54,12 @@ module.exports = async (client, message, config) => {
             const levelchannel = client.channels.cache.get(client.guildConfig[message.guild.id].channels.levelchannel);
             if (levelchannel) {
               try {
-              client.channels.cache.get(levelchannel.id).send({embed: embed});
+              client.channels.cache.get(levelchannel.id).send({embeds: [embed]});
             } catch(err) {
               console.log(err.stack);
             }
             } else {
-              message.channel.send({embed: embed});
+              message.channel.send({embeds: [embed]});
             }
           }
         });

@@ -4,7 +4,7 @@ const Discord = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('banslash')
+    .setName('ban')
     .setDescription('Bans the user')
     .setDefaultPermission(false)
     .addUserOption(option =>
@@ -30,7 +30,7 @@ module.exports = {
         description += ` for '**${reason}**'`;
         reasonText = ` for '**${reason}**'`;
       }
-      
+
       if (interaction.member.id === '620196347890499604') {
         try {
           await member.send(`You have been banned from '**${interaction.guild}**' by **${interaction.member.user.tag}**${reasonText}. This ban is administrative and cannot be appealed. Thank you for being a member at **Polaris**.`);
@@ -47,7 +47,7 @@ module.exports = {
       } catch (err) { }
       await member.ban({ reason: reason })
         .catch((error) => interaction.reply(`There was an error ${interaction.user}! Error: ${error}`));
-      
+
       const embed = new Discord.MessageEmbed()
         .setColor('RED')
         .setDescription(description);

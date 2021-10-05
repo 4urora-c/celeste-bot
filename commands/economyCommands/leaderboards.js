@@ -7,41 +7,21 @@ const Discord = require('discord.js');
 //const Canvas = require('canvas');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
-  name: 'leaderboards',
-  description: 'Print leaderboards',
-  aliases: 'lb',
-  execute: async (client, message, config) => {
-    const msgArr = message.content.split(' ');
-    let page = 0;
-    if (msgArr[1] !== 'points' || msgArr[1] !== 'levels') {
-    if (msgArr[1]) {
-      if (!isNaN(msgArr[1])) {
-        page = parseInt(msgArr[1], 10) - 1;
-        if (page < 0) { page = 1; }
-      }
-    }
-  } else if (msgArr[1] === 'points' || msgArr[1] === 'levels') {
-    if (msgArr[2]) {
-      if (!isNaN(msgArr[2])) {
-        page = parseInt(msgArr[2], 10) - 1;
-        if (page < 0) { page = 1; }
-      }
-  }
-}
-
-  if (msgArr[1]) {
-    if (client.leaderboards) {
-      clearInterval(client.leaderboards);
-    }
-    const data = await client.db.userdata.find({guildID: message.guild.id}).toArray();
-    const overall = data.sort((a, b) => b.coins - a.coins).slice(0 + page * 10, 10 + page * 10);
+data: new SlashCommandBuilder()
+  .setName('leaderboard')
+  .setDescription('Shows the currency leaderboard for the server')
+  .setDefaultPermission(false),
+  async execute(interaction, config) {
+    const data = await interaction.client.db.userdata.find({guildID: interaction.guild.id}).toArray();
+    const overall = data.sort((a, b) => b.coins - a.coins)
 
     //Canvas.registerFont('fonts/Nexa Bold.otf', { family: 'NexaBold', style: 'Heavy', weight: 'Normal' });
     //const canvas = Canvas.createCanvas(589, 916);
   //  const ctx = canvas.getContext('2d');
-    const guilddata2 = await client.db.config.findOne({
-      id: message.guild.id,
+    const guilddata2 = await interaction.client.db.config.findOne({
+      id: interaction.guild.id,
     });
     console.log(data)
   //  let background = await Canvas.loadImage(guilddata2.lbimage ? guilddata2.lbimage : 'img/leaderboards/leaderboardsbg1.png');
@@ -52,10 +32,10 @@ module.exports = {
 
     let i = 0;
     let content = '';
-    const guilddata = await client.db.islandinfo.findOne({
-      guildid: message.guild.id,
+    const guilddata = await interaction.client.db.islandinfo.findOne({
+      guildid: interaction.guild.id,
     });
-    if (guilddata2.economy === 'false') return message.channel.send('Economy is disabled on this guild!');
+    if (guilddata2.economy === 'false') return interaction.reply('Economy is disabled on this guild!');
   /*  for(v<=data.length) {
       if (data[v].id === currentmember) {
         content += `Your position: **${v+1} / ${data.length}** \n\n`;
@@ -65,7 +45,7 @@ module.exports = {
     function fn() {
       try {
         for(v=0;v<=data.length;v++) {
-          if (data[v].id === message.member.id) {
+          if (data[v].id === interaction.member.id) {
             return v+1;
           }
         }
@@ -75,7 +55,7 @@ module.exports = {
     }
     const memberRank = fn();
     for (const user of overall) {
-      const currentUser = message.guild.members.cache.get(user.id);
+      const currentUser = interaction.guild.members.cache.get(user.id);
       if (i < 11) {
         i++;
       } else {
@@ -93,78 +73,13 @@ module.exports = {
       }
 
       content += `${badge} **${i}.** ${currentUser ? `${currentUser.displayName}` : 'Member Left'} - ${`${user.coins} **${guilddata.currencyname ? guilddata.currencyname : 'Bells'}**`} `+ '\n';
-      /* // Print Name
-      ctx.font = '32px NexaBold';
-      ctx.fillStyle = 'rgb(236, 229, 216)';
-      ctx.fillText(currentUser ? currentUser.displayName : 'Member Left', 147, 154 + i * 78.2);
-
-      // Print Exp
-      ctx.font = '20px NexaBold';
-      ctx.fillStyle = 'rgb(236, 229, 216)';
-      ctx.fillText(`${user.coins} ${guilddata.currencyname ? guilddata.currencyname : 'Bells'}`, 147, 184 + i * 78.2);
-
-      // Print Rank
-      ctx.font = '34px NexaBold';
-      ctx.fillStyle = 'rgb(39, 39, 39)';
-      ctx.fillText(`#${i + 1 + page * 10}`, 30, 170 + i * 78.2);*/
 
     }
     const embed = new Discord.MessageEmbed()
-    .setThumbnail(message.guild.iconURL())
+    .setThumbnail(interaction.guild.iconURL())
     .setDescription(`Your Position: **${memberRank} / ${data.length}** \n\n**Leaderboard**\n`+ content)
     .setTimestamp()
     .setTitle(`Leaderboard - Top 10 (${guilddata.currencyname ? guilddata.currencyname : 'Bells'})`)
-    message.channel.send({embeds: [embed]})
-    //const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'leaderboard.png');
-  //  message.channel.send({files: [{ file: attachment }]});
-} /*else if (msgArr[1] === 'levels') {
-    if (client.leaderboards) {
-      clearInterval(client.leaderboards);
-    }
-    const data = await client.db.userdata.find({guildID: message.guild.id}).toArray();
-    const overall = data.sort((a, b) => b.exp - a.exp).slice(0 + page * 10, 10 + page * 10);
-    const guilddata2 = await client.db.config.findOne({
-      id: message.guild.id,
-    });
-    Canvas.registerFont('fonts/Nexa Bold.otf', { family: 'NexaBold', style: 'Heavy', weight: 'Normal' });
-    const canvas = Canvas.createCanvas(589, 916);
-    const ctx = canvas.getContext('2d');
-
-    let background = await Canvas.loadImage(guilddata2.lbimage ? guilddata2.lbimage : 'img/leaderboards/leaderboardsbg1.png');
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-    background = await Canvas.loadImage('img/leaderboards/leaderboards1.png');
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-    let i = 0;
-    const guilddata = await client.db.islandinfo.findOne({
-      guildid: message.guild.id,
-    });
-    if (guilddata2.economy === 'false') return message.channel.send('Economy is disabled on this guild!');
-    for (const user of overall) {
-      const currentUser = message.guild.members.cache.get(user.id);
-      // Print Name
-      ctx.font = '32px NexaBold';
-      ctx.fillStyle = 'rgb(236, 229, 216)';
-      ctx.fillText(currentUser ? currentUser.displayName : 'Member Left', 147, 154 + i * 78.2);
-
-      // Print Exp
-      ctx.font = '20px NexaBold';
-      ctx.fillStyle = 'rgb(236, 229, 216)';
-      ctx.fillText(`${user.exp} EXP`, 147, 184 + i * 78.2);
-
-      // Print Rank
-      ctx.font = '34px NexaBold';
-      ctx.fillStyle = 'rgb(39, 39, 39)';
-      ctx.fillText(`#${i + 1 + page * 10}`, 30, 170 + i * 78.2);
-
-      i += 1;
-    }
-    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'leaderboard.png');
-    message.channel.send({files: [
-      { file: attachment }
-  ]});
-}*/
-
+    interaction.reply({embeds: [embed]})
   },
 };
