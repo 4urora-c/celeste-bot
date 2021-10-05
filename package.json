@@ -19,7 +19,7 @@
     "canvas": "^2.7.0",
     "canvasjs": "^1.8.3",
     "discord-api-types": "^0.23.1",
-    "discord.js": "^13.0.1",
+    "discord.js": "^13.2.0",
     "distube": "^2.8.11",
     "dotenv-flow": "^3.2.0",
     "express": "^4.17.1",
