@@ -5,8 +5,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('join')
-    .setDescription('Use this when you are ready to join the rest of the server')
-    .setDefaultPermission(true),
+    .setDescription('Use this when you are ready to join the rest of the server'),
   async execute(interaction) {
     const embed = new Discord.MessageEmbed()
     .setTitle('Joining the server')
