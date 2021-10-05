@@ -1,4 +1,4 @@
-const commandsToSetPermissions = ['ban'];
+const commandsToSetPermissions = ['ban, reactionrole'];
 const adminCommands = ['refresh', 'ban'];
 const basicdeny = ['join'];
 const basicallow = ['leaderboard', 'profile']
