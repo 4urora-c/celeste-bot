@@ -43,7 +43,7 @@ module.exports = {
       }
         // end economy
       } else if (msgArr[1].toLowerCase() === 'welcomerole') {
-        if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
+        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
 
         const target = message.mentions.roles.first() || message.guild.roles.cache.get(msgArr[2]);
 
@@ -77,7 +77,7 @@ module.exports = {
         } //end ga perms
 
       } else if (msgArr[1].toLowerCase() === 'gaperms') { //start ga perms
-        if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
+        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
 
         const target = message.mentions.roles.first() || message.guild.roles.cache.get(msgArr[2]) || message.mentions.members.first() || message.guild.members.cache.get(msgArr[2]);
 
@@ -112,7 +112,7 @@ module.exports = {
 
       } else if (msgArr[1].toLowerCase() === 'modperms') {
 
-        if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
+        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
 
         const target = message.mentions.roles.first() || message.guild.roles.cache.get(msgArr[1]) || message.mentions.members.first() || message.guild.members.cache.get(msgArr[1]);
 
@@ -147,7 +147,7 @@ module.exports = {
 
       } else if (msgArr[1].toLowerCase() === 'levellog') {
         // start level logging channel
-        if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
+        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
         if (msgArr.length === 2) {
           const levelchannel = client.channels.cache.get(client.guildConfig[message.guild.id].channels.levelchannel);
           if (levelchannel) {
@@ -181,7 +181,7 @@ module.exports = {
         //end level logging channel
       } else if (msgArr[1].toLowerCase() === 'purchaselog') {
         // start treasure logging channel
-        if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
+        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
         if (msgArr.length === 2) {
           const purchaselog = client.channels.cache.get(client.guildConfig[message.guild.id].channels.purchaselog);
           if (purchaselog) {
@@ -227,7 +227,7 @@ module.exports = {
         //end treasure logging channel
       } else if (msgArr[1].toLowerCase() === 'prefix') {
         //set prefix start
-        if (message.author.id !== '620196347890499604' || !message.member.hasPermission(['ADMINISTRATOR'])) return message.channel.send('You\'re not allowed to use this command!');
+        if (message.author.id !== '620196347890499604' || !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return message.channel.send('You\'re not allowed to use this command!');
 
         const msgArr = message.content.split(' ');
         const newPrefix = msgArr[2] ? msgArr[2] : null;
@@ -248,7 +248,7 @@ module.exports = {
         //end set prefix
       } else if (msgArr[1].toLowerCase() === 'currencyname') {
         // set currency name start
-        if (message.author.id !== '620196347890499604' && !message.member.hasPermission('ADMINISTRATOR')) {
+        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
           return message.channel.send('You do not have permission to run this command!');
         }
         if (msgArr[2]) {
@@ -272,7 +272,7 @@ module.exports = {
         //end currency name
       } else if (msgArr[1].toLowerCase() === 'welcomechannel') {
         //wc start
-        if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
+        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
         if (msgArr.length === 2) {
           const welcomeChannel = client.channels.cache.get(client.guildConfig[message.guild.id].channels.welcomeChannel);
           if (welcomeChannel) {
@@ -318,7 +318,7 @@ module.exports = {
         //end wc
       } else if (msgArr[1].toLowerCase() === 'welcomeimage') {
         //start wi
-        if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
+        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
         if (msgArr.length === 2) {
           const guilddata = await client.db.config.findOne({
             id: message.guild.id,
@@ -379,14 +379,14 @@ module.exports = {
         const guild = await client.db.islandinfo.findOne({ guildid: message.guild.id });
         const name = 'roleinfo';
         let description = msgArr[2];
-        if (msgArr[2] === 'remove' && (message.member.hasPermission('ADMINISTRATOR') || message.author.id === '620196347890499604')) {
+        if (msgArr[2] === 'remove' && (message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || message.author.id === '620196347890499604')) {
           if (guild) {
             client.db.islandinfo.removeOne({ guildid: message.guild.id });
             message.channel.send(`${message.guild}'s settings have been removed!`);
           }
           return;
         }
-        if (msgArr[2] && (message.member.hasPermission('ADMINISTRATOR') || message.author.id === '620196347890499604')) {
+        if (msgArr[2] && (message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || message.author.id === '620196347890499604')) {
         let item;
         if (guild) {
           if (guild.moreinfo) { item = guild.moreinfo.find((entry) => entry.name === name); }
@@ -432,7 +432,7 @@ module.exports = {
     } else if (msgArr[1].toLowerCase() === 'setlbimage') {
       // set lb image
       const msgArr = message.content.split(' ');
-      if (message.author.id !== '620196347890499604' && !message.member.hasPermission(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
+      if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
       if (msgArr.length === 2) {
         const guilddata = await client.db.config.findOne({
           id: message.guild.id,
@@ -512,7 +512,7 @@ module.exports = {
       }
       //end cooldowns
     } else if (msgArr[1].toLowerCase() === 'requirefc') {
-      if (message.author.id !== '620196347890499604' && !message.member.hasPermission('ADMINISTRATOR')) {
+      if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
         return message.channel.send('You do not have permission to run this command!');
       }
       if (msgArr[2] === 'true' || msgArr[2] === 'false') {
@@ -535,7 +535,7 @@ module.exports = {
       }
     } else if (msgArr[1].toLowerCase() === 'togglerole') {
 
-      if (!message.member.hasPermission(['ADMINISTRATOR'])) { message.reply('You\'re not allowed to use this command!'); return; }
+      if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { message.reply('You\'re not allowed to use this command!'); return; }
       config.togglerole = !config.togglerole;
       message.channel.send('Level up role toggle has been applied!');
       await client.db.config.updateOne({ id: message.guild.id }, { $set: { togglerole: config.togglerole } }, { upsert: true });
@@ -569,7 +569,7 @@ module.exports = {
       }
       //dj end
     }  else if (msgArr[1].toLowerCase() === 'messagelog') {
-        if (message.author.id !== '620196347890499604' && !message.member.hasPermission('ADMINISTRATOR')) {
+        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
           return message.channel.send('You do not have permission to run this command!');
         }
         if (msgArr[2] === 'true' || msgArr[2] === 'false') {
