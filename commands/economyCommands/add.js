@@ -7,7 +7,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('add')
-    .setDescription('Use this when you are ready to join the rest of the server')
+    .setDescription('Add currency to users or roles')
     .addMentionableOption(option =>
       option
         .setName('target')

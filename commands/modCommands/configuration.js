@@ -5,323 +5,321 @@ function jsUcfirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 const Discord = require('discord.js');
-
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
-  name: 'config',
-  description: 'name',
-  execute: async (client, message, config) => {
-    const msgArr = message.content.split(' ');
-    if (msgArr[1]) {
+  data: new SlashCommandBuilder()
+    .setName('config')
+    .setDescription('Server configuration command')
+    .addStringOption(option =>
+      option
+        .setName('config')
+        .setDescription('Input configuration here')
+        .setRequired(true))
+    .addStringOption(option =>
+      option
+        .setName('second')
+        .setDescription('Second argument'))
+        .addStringOption(option =>
+          option
+            .setName('third')
+            .setDescription('Third argument')),
+  async execute(interaction) {
+    const t = interaction.options.getString('config')
+    const ar = interaction.options.getString('second')
+    const tr = interaction.options.getString('third')
+    if (t) {
 
-      if (msgArr[1].toLowerCase() === 'economy') {
-
-      if (message.author.id !== '620196347890499604' && !message.member.permissions.has(['ADMINISTRATOR'])) { return message.reply('You\'re not allowed to use this command!'); }
-      if (msgArr.length >= 1) {
-        const guilddata = await client.db.config.findOne({
-          id: message.guild.id,
+      if (t.toLowerCase() === 'economy') {
+        const guilddata = await interaction.client.db.config.findOne({
+          id: interaction.guild.id,
         });
-        if (!msgArr[2]) {
-          return message.channel.send(`Economy is set to **${guilddata.economy}**!`);
+        if (!ar) {
+          return interaction.reply(`Economy is set to **${guilddata.economy}**!`);
         } else {
-          if (msgArr[2].toLowerCase() === 'true' || msgArr[2].toLowerCase() === 'false') {
-            config.economy = msgArr[2];
-            client.db.config.updateOne({ id: message.guild.id }, {
+          if (ar.toLowerCase() === 'true' || ar.toLowerCase() === 'false') {
+            interaction.client.db.config.economy = ar;
+            interaction.client.db.config.updateOne({ id: interaction.guild.id }, {
               $set: {
-                economy: msgArr[2],
+                economy: ar,
               },
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
-            .setDescription(`You have successfully set economy to ${msgArr[2]}!`);
-            message.channel.send({embeds: [embed]});
+            .setDescription(`You have successfully set economy to ${ar}!`);
+            interaction.reply({embeds: [embed]});
           } else if (!guilddata) {
-            return message.channel.send('Economy is set to **true**!');
+            return interaction.reply('Economy is set to **true**!');
           } else {
-            message.channel.send('You can only specify true or false!');
+            interaction.reply('You can only specify true or false!');
           }
         }
       }
         // end economy
-      } else if (msgArr[1].toLowerCase() === 'welcomerole') {
-        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
-
-        const target = message.mentions.roles.first() || message.guild.roles.cache.get(msgArr[2]);
+      } else if (t.toLowerCase() === 'welcomerole') {
+        const target = ar.mentions.roles.first() || interaction.guild.roles.cache.get(ar);
 
         if (target) {
-          const exists = config.permissions.joinrole.findIndex((i) => i === target.id);
+          const exists = interaction.client.db.config.permissions.joinrole.findIndex((i) => i === target.id);
           if (exists < 0) {
             config.permissions.joinrole.push(target.id);
-            client.db.config.updateOne({ id: message.guild.id }, {
+            interaction.client.db.config.updateOne({ id: interaction.guild.id }, {
               $set: {
-                permissions: config.permissions,
+                permissions: interaction.client.db.config.permissions,
               },
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully added ${target} to the join roles.`);
-            message.channel.send({embeds: [embed]});
+            interaction.reply({embeds: [embed]});
           } else {
             config.permissions.joinrole.splice(exists, 1);
-            client.db.config.updateOne({ id: message.guild.id }, {
+            interaction.client.db.config.updateOne({ id: interaction.guild.id }, {
               $set: {
-                permissions: config.permissions,
+                permissions: interaction.client.db.config.permissions,
               },
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully removed ${target} from the join roles.`);
-            message.channel.send({embeds: [embed]});
+            interaction.reply({embeds: [embed]});
           }
         } else {
-          message.channel.send('Specified target not found!');
+          interaction.reply('Specified target not found!');
         } //end ga perms
 
-      } else if (msgArr[1].toLowerCase() === 'gaperms') { //start ga perms
-        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
-
-        const target = message.mentions.roles.first() || message.guild.roles.cache.get(msgArr[2]) || message.mentions.members.first() || message.guild.members.cache.get(msgArr[2]);
+      } else if (t.toLowerCase() === 'gaperms') { //start ga perms
+        const target = ar.mentions.roles.first() || interaction.guild.roles.cache.get(ar) || ar.mentions.members.first() || interaction.guild.members.cache.get(ar);
 
         if (target) {
-          const exists = config.permissions.giveaways.findIndex((i) => i === target.id);
+          const exists = interaction.client.db.config.permissions.giveaways.findIndex((i) => i === target.id);
           if (exists < 0) {
             config.permissions.giveaways.push(target.id);
-            client.db.config.updateOne({ id: message.guild.id }, {
+            interaction.client.db.config.updateOne({ id: interaction.guild.id }, {
               $set: {
-                permissions: config.permissions,
+                permissions: interaction.client.db.config.permissions,
               },
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully added permissions for giveaways to ${target}`);
-            message.channel.send({embeds: [embed]});
+            interaction.reply({embeds: [embed]});
           } else {
             config.permissions.giveaways.splice(exists, 1);
-            client.db.config.updateOne({ id: message.guild.id }, {
+            interaction.client.db.config.updateOne({ id: interaction.guild.id }, {
               $set: {
-                permissions: config.permissions,
+                permissions: interaction.client.db.config.permissions,
               },
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully removed permissions for giveaways from ${target}`);
-            message.channel.send({embeds: [embed]});
+            interaction.reply({embeds: [embed]});
           }
         } else {
-          message.channel.send('Specified target not found!');
+          interaction.reply('Specified target not found!');
         } //end ga perms
 
-      } else if (msgArr[1].toLowerCase() === 'modperms') {
+      } else if (t.toLowerCase() === 'modperms') {
 
-        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
-
-        const target = message.mentions.roles.first() || message.guild.roles.cache.get(msgArr[1]) || message.mentions.members.first() || message.guild.members.cache.get(msgArr[1]);
+        const target = ar.mentions.roles.first() || interaction.guild.roles.cache.get(ar) || ar.mentions.members.first() || interaction.guild.members.cache.get(ar);
 
         if (target) {
           const exists = config.permissions.moderation.findIndex((i) => i === target.id);
           if (exists < 0) {
             config.permissions.moderation.push(target.id);
-            client.db.config.updateOne({ id: message.guild.id }, {
+            interaction.client.db.config.updateOne({ id: interaction.guild.id }, {
               $set: {
-                permissions: config.permissions,
+                permissions: interaction.client.db.config.permissions,
               },
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully added permissions for moderation to ${target}`);
-            message.channel.send({embeds: [embed]});
+            interaction.reply({embeds: [embed]});
           } else {
             config.permissions.moderation.splice(exists, 1);
-            client.db.config.updateOne({ id: message.guild.id }, {
+            interaction.client.db.config.updateOne({ id: interaction.guild.id }, {
               $set: {
-                permissions: config.permissions,
+                permissions: interaction.client.db.config.permissions,
               },
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully removed permissions for moderation from ${target}`);
-            message.channel.send({embeds: [embed]});
+            interaction.reply({embeds: [embed]});
           }
         } else {
-          message.channel.send('Specified target not found!');
+          interaction.reply('Specified target not found!');
         } //end mod perms
 
-      } else if (msgArr[1].toLowerCase() === 'levellog') {
+      } else if (t.toLowerCase() === 'levellog') {
         // start level logging channel
-        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
-        if (msgArr.length === 2) {
-          const levelchannel = client.channels.cache.get(client.guildConfig[message.guild.id].channels.levelchannel);
+        if (ar) {
+          const levelchannel = interaction.client.channels.cache.get(interaction.client.guildConfig[interaction.guild.id].channels.levelchannel);
           if (levelchannel) {
             console.log(levelchannel);
-            return message.channel.send(`Current levels channel is ${levelchannel}.`);
+            return interaction.reply(`Current levels channel is ${levelchannel}.`);
           } else {
-            return message.channel.send('Levels channel not yet set!');
+            return interaction.reply('Levels channel not yet set!');
           }
         }
 
-        const targetChannel = message.mentions.channels.first() || client.channels.cache.get(msgArr[2]);
+        const targetChannel = ar.mentions.channels.first() || interaction.client.channels.cache.get(ar);
 
         if (targetChannel) {
-          if (targetChannel.guild.id === message.guild.id) {
+          if (targetChannel.guild.id === interaction.guild.id) {
             config.channels.levelchannel = targetChannel.id;
-            client.db.config.updateOne({ id: message.guild.id }, {
+            interaction.client.db.config.updateOne({ id: interaction.guild.id }, {
               $set: {
-                channels: config.channels,
+                channels: interaction.client.db.config.channels,
               },
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully set the levels channel to ${targetChannel}`);
-            message.channel.send({embeds: [embed]});
+            interaction.reply({embeds: [embed]});
           } else {
-            message.channel.send('You can only specify channels within this guild!');
+            interaction.reply('You can only specify channels within this guild!');
           }
         } else {
-          message.channel.send('Specified channel not found!');
+          interaction.reply('Specified channel not found!');
         }
         //end level logging channel
-      } else if (msgArr[1].toLowerCase() === 'purchaselog') {
+      } else if (t.toLowerCase() === 'purchaselog') {
         // start treasure logging channel
-        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
-        if (msgArr.length === 2) {
-          const purchaselog = client.channels.cache.get(client.guildConfig[message.guild.id].channels.purchaselog);
+        if (ar) {
+          const purchaselog = interaction.client.channels.cache.get(interaction.client.guildConfig[interaction.guild.id].channels.purchaselog);
           if (purchaselog) {
-            return message.channel.send(`Current purchase logging channel is ${purchaselog}.`);
+            return interaction.reply(`Current purchase logging channel is ${purchaselog}.`);
           } else {
-            return message.channel.send('Purchase logging channel not yet set!');
+            return interaction.reply('Purchase logging channel not yet set!');
           }
         }
 
-        const targetChannel = message.mentions.channels.first() || client.channels.cache.get(msgArr[2]);
+        const targetChannel = ar.mentions.channels.first() || interaction.client.channels.cache.get(ar);
 
         if (targetChannel) {
-          if (targetChannel.guild.id === message.guild.id) {
+          if (targetChannel.guild.id === interaction.guild.id) {
             config.channels.purchaselog = targetChannel.id;
-            client.db.config.updateOne({ id: message.guild.id }, {
+            interaction.client.db.config.updateOne({ id: interaction.guild.id }, {
               $set: {
-                channels: config.channels,
+                channels: interaction.client.db.config.channels,
               },
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully set the purchase logging channel to ${targetChannel}`);
-            message.channel.send({embeds: [embed]});
+            interaction.reply({embeds: [embed]});
           } else {
-            message.channel.send('You can only specify channels within this guild!');
+            interaction.reply('You can only specify channels within this guild!');
           }
-        } else if (msgArr[2] === 'remove') {
+        } else if (ar === 'remove') {
           config.channels.purchaselog = '';
-          await client.db.config.updateOne({ id: message.guild.id}, {
+          await interaction.client.db.config.updateOne({ id: interaction.guild.id}, {
             $unset: {
               'channels.purchaselog': ''
             }
           }, { upsert: true }).catch((error) => {
-            return message.channel.send('There was an error removing the purchase logging channel from the database.')
+            return interaction.reply('There was an error removing the purchase logging channel from the database.')
           });
           const doneEmbed = new Discord.MessageEmbed()
           .setColor('#5b4194')
           .setDescription('Purchase logging channel has been removed.');
-          message.channel.send({embeds: [doneEmbed]});
+          interaction.reply({embeds: [doneEmbed]});
         } else {
-          message.channel.send('Specified channel not found!');
+          interaction.reply('Specified channel not found!');
         }
         //end treasure logging channel
-      } else if (msgArr[1].toLowerCase() === 'prefix') {
+      } else if (t.toLowerCase() === 'prefix') {
         //set prefix start
-        if (message.author.id !== '620196347890499604' || !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return message.channel.send('You\'re not allowed to use this command!');
-
-        const msgArr = message.content.split(' ');
-        const newPrefix = msgArr[2] ? msgArr[2] : null;
+        const newPrefix = ar ? ar : null;
         if (!newPrefix) {
-          message.channel.send('You must provide the new prefix!');
+          interaction.reply('You must provide the new prefix!');
           return;
         }
 
-        client.db.config.updateOne({ id: message.guild.id },
+        interaction.client.db.config.updateOne({ id: interaction.guild.id },
           {
             $set: {
               prefix: newPrefix,
             },
           });
 
-        config.prefix = newPrefix;
-        message.channel.send(`You have changed your prefix to \`${newPrefix}\`!`);
+        interaction.client.db.config.prefix = newPrefix;
+        interaction.reply(`You have changed your prefix to \`${newPrefix}\`!`);
         //end set prefix
-      } else if (msgArr[1].toLowerCase() === 'currencyname') {
+      } else if (t.toLowerCase() === 'currencyname') {
         // set currency name start
-        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
-          return message.channel.send('You do not have permission to run this command!');
-        }
-        if (msgArr[2]) {
-          client.db.islandinfo.updateOne(
-            { guildid: message.guild.id },
+
+        if (ar) {
+          interaction.client.db.islandinfo.updateOne(
+            { guildid: interaction.guild.id },
             {
               $set: {
-                currencyname: msgArr.slice(2).join(' '),
+                currencyname: ar,
               },
             },
             { upsert: true },
           );
           const embedA = new Discord.MessageEmbed()
         .setColor('#5b4194')
-        .setDescription(`Currency name has been set to **${msgArr.slice(2).join(' ')}**!`);
-        message.channel.send({embeds: [embedA]});
+        .setDescription(`Currency name has been set to **${ar}**!`);
+        interaction.reply({embeds: [embedA]});
 
         } else {
-          message.channel.send('You must indicate a name!');
+          interaction.reply('You must indicate a name!');
         }
         //end currency name
-      } else if (msgArr[1].toLowerCase() === 'welcomechannel') {
+      } else if (t.toLowerCase() === 'welcomechannel') {
         //wc start
-        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
-        if (msgArr.length === 2) {
-          const welcomeChannel = client.channels.cache.get(client.guildConfig[message.guild.id].channels.welcomeChannel);
+        if (ar) {
+          const welcomeChannel = interaction.client.channels.cache.get(interaction.client.guildConfig[interaction.guild.id].channels.welcomeChannel);
           if (welcomeChannel) {
-            return message.channel.send(`Current welcome channel is ${welcomeChannel}.`);
+            return;
           } else {
-            return message.channel.send('Welcome channel not yet set!');
+            return interaction.reply('Welcome channel not yet set!');
           }
         }
 
-        const targetChannel = message.mentions.channels.first() || client.channels.cache.get(msgArr[1]);
+        const targetChannel = ar.mentions.channels.first() || interaction.client.channels.cache.get(ar);
 
         if (targetChannel) {
-          if (targetChannel.guild.id === message.guild.id) {
+          if (targetChannel.guild.id === interaction.guild.id) {
             config.channels.welcomeChannel = targetChannel.id;
-            client.db.config.updateOne({ id: message.guild.id }, {
+            interaction.client.db.config.updateOne({ id: interaction.guild.id }, {
               $set: {
-                channels: config.channels,
+                channels: interaction.client.db.config.channels,
               },
             }, { upsert: true });
             const embed = new Discord.MessageEmbed()
             .setColor('#5b4194')
             .setDescription(`You have successfully set the welcome channel to ${targetChannel}`);
-            message.channel.send({embeds: [embed]});
+            interaction.reply({embeds: [embed]});
           } else {
-            message.channel.send('You can only specify channels within this guild!');
+            interaction.reply('You can only specify channels within this guild!');
           }
-        } else if (msgArr[2] === 'remove') {
+        } else if (ar === 'remove') {
           config.channels.welcomeChannel = '';
-          await client.db.config.updateOne({ id: message.guild.id}, {
+          await interaction.client.db.config.updateOne({ id: interaction.guild.id}, {
             $unset: {
               'channels.welcomeChannel': ''
             }
           }, { upsert: true }).catch((error) => {
-            return message.channel.send('There was an error removing the welcome channel from the database.')
+            return interaction.reply('There was an error removing the welcome channel from the database.')
           });
           const doneEmbed = new Discord.MessageEmbed()
           .setColor('#5b4194')
           .setDescription('Welcome channel has been removed.');
-          message.channel.send({embed: doneEmbed});
+          interaction.reply({embeds: [doneEmbed]});
         } else {
-          message.channel.send('Specified channel not found!');
+          interaction.reply('Specified channel not found!');
         }
         //end wc
-      } else if (msgArr[1].toLowerCase() === 'welcomeimage') {
+      } else if (t.toLowerCase() === 'welcomeimage') {
         //start wi
-        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
-        if (msgArr.length === 2) {
-          const guilddata = await client.db.config.findOne({
-            id: message.guild.id,
+        if (ar) {
+          const guilddata = await interaction.client.db.config.findOne({
+            id: interaction.guild.id,
           });
           if (guilddata.welcomeimage) {
             const embed = new Discord.MessageEmbed()
@@ -329,20 +327,20 @@ module.exports = {
             try {
               embed.setImage(guilddata.welcomeimage);
             } catch (err) {
-              return message.channel.send('That is not a valid image!')
+              return interaction.reply('That is not a valid image!')
             }
-            return message.channel.send({embeds: [embed]});
+            return interaction.reply({embeds: [embed]});
           } else {
-            return message.channel.send('No welcome image has been set!');
+            return interaction.reply('No welcome image has been set!');
           }
         }
-        if (msgArr[2].includes('png') || msgArr[2].includes('jpg') || msgArr[2].includes('jpeg')) {
-          config.welcomeimage = msgArr[2];
-          client.db.config.updateOne({
-            id: message.guild.id
+        if (ar.includes('png') || ar.includes('jpg') || ar.includes('jpeg')) {
+          interaction.client.db.config.welcomeimage = ar;
+          interaction.client.db.config.updateOne({
+            id: interaction.guild.id
           }, {
             $set: {
-              welcomeimage: msgArr[2],
+              welcomeimage: ar,
             },
           }, {
             upsert: true
@@ -351,14 +349,14 @@ module.exports = {
             .setColor('#5b4194')
             .setDescription(`You have successfully set the welcome image to:`);
           try {
-            embed.setImage(msgArr[2]);
+            embed.setImage(ar);
           } catch (err) {
-            return message.channel.send('That is not a valid image!')
+            return interaction.reply('That is not a valid image!')
           }
-          message.channel.send({embeds: [embed]});
-        } else if (msgArr[2].toLowerCase() === 'remove') {
-          client.db.config.updateOne({
-            id: message.guild.id
+          interaction.reply({embeds: [embed]});
+        } else if (ar.toLowerCase() === 'remove') {
+          interaction.client.db.config.updateOne({
+            id: interaction.guild.id
           }, {
             $unset: {
               welcomeimage: ""
@@ -369,37 +367,38 @@ module.exports = {
           const doneembed = new Discord.MessageEmbed()
           .setColor('#5b4194')
           .setDescription('Welcome image has been removed!');
-          message.channel.send({embeds: [doneembed]})
+          interaction.reply({embeds: [doneembed]})
         } else {
-          message.channel.send('You must specify an image url!');
+          interaction.reply('You must specify an image url!');
         }
           //end wi
-      } else if (msgArr[1].toLowerCase() === 'fcrole') {
+      } else if (t.toLowerCase() === 'fcrole') {
         // setrole start
-        const guild = await client.db.islandinfo.findOne({ guildid: message.guild.id });
+        try {
+        const guild = await interaction.client.db.islandinfo.findOne({ guildid: interaction.guild.id });
         const name = 'roleinfo';
-        let description = msgArr[2];
-        if (msgArr[2] === 'remove' && (message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || message.author.id === '620196347890499604')) {
+        let description = ar;
+        if (ar === 'remove') {
           if (guild) {
-            client.db.islandinfo.removeOne({ guildid: message.guild.id });
-            message.channel.send(`${message.guild}'s settings have been removed!`);
+            interaction.client.db.islandinfo.removeOne({ guildid: interaction.guild.id });
+            interaction.reply(`${interaction.guild}'s settings have been removed!`);
           }
           return;
         }
-        if (msgArr[2] && (message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || message.author.id === '620196347890499604')) {
-        let item;
+        if (ar) {
+        let item = interaction.guild.roles.cache.get(r => r.id === ar) || interaction.guild.roles.cache.get(r => r.name === ar)
         if (guild) {
           if (guild.moreinfo) { item = guild.moreinfo.find((entry) => entry.name === name); }
         }
         if (item) {
-          item.description = (description.startsWith('<@&')) ? (description.slice(3, -1)) : description;
-          const moreinfo = (description.startsWith('<@&')) ? (description.slice(3, -1)) : description;
+          item.description = item.id;
+          const moreinfo = item.id;
           const embedA = new Discord.MessageEmbed()
         .setColor('#5b4194')
-        .setDescription(`Guild role has been set to **${description.length === 18 ? `<@&${description}>` : description}**!`);
-        message.channel.send({embeds: [embedA]});
-          client.db.islandinfo.updateOne(
-            { guildid: message.guild.id },
+        .setDescription(`Guild role has been set to **${item}**!`);
+        interaction.reply({embeds: [embedA]});
+          interaction.client.db.islandinfo.updateOne(
+            { guildid: interaction.guild.id },
             {
               $set: {
                 moreinfo: guild.moreinfo,
@@ -408,8 +407,8 @@ module.exports = {
             { upsert: true },
           );
         } else {
-          client.db.islandinfo.updateOne(
-            { guildid: message.guild.id },
+          interaction.client.db.islandinfo.updateOne(
+            { guildid: interaction.guild.id },
             {
               $push: {
                 moreinfo: {
@@ -423,19 +422,15 @@ module.exports = {
         const embedA = new Discord.MessageEmbed()
         .setColor('#7cdda5')
         .setDescription(`Guild role has been set to **<@&${item.description}>**`);
-        message.channel.send({embeds: [embedA]});
+        interaction.reply({embeds: [embedA]});
         }
-      } else {
-        message.channel.send('You don\'t have permission to run this command.');
-      }
+      } } catch(e) {console.log(e.stack)}
       // end setrole
-    } else if (msgArr[1].toLowerCase() === 'setlbimage') {
+    } if (t.toLowerCase() === 'setlbimage') {
       // set lb image
-      const msgArr = message.content.split(' ');
-      if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { return message.reply('You\'re not allowed to use this command!'); }
-      if (msgArr.length === 2) {
-        const guilddata = await client.db.config.findOne({
-          id: message.guild.id,
+      if (ar) {
+        const guilddata = await interaction.client.db.config.findOne({
+          id: interaction.guild.id,
         });
         if (guilddata.lbimage) {
           const embed = new Discord.MessageEmbed()
@@ -443,20 +438,20 @@ module.exports = {
           try {
             embed.setImage(guilddata.lbimage);
           } catch (err) {
-            return message.channel.send('That is not a valid image!')
+            return interaction.reply('That is not a valid image!')
           }
-          return message.channel.send({embeds: [embed]});
+          return interaction.reply({embeds: [embed]});
         } else {
-          return message.channel.send('No leaderboard background has been set!');
+          return interaction.reply('No leaderboard background has been set!');
         }
       }
-      if (msgArr[2].includes('png') || msgArr[2].includes('jpg') || msgArr[2].includes('jpeg')) {
-        config.lbimage = msgArr[2];
-        client.db.config.updateOne({
-          id: message.guild.id
+      if (ar.includes('png') || ar.includes('jpg') || ar.includes('jpeg')) {
+        interaction.client.db.config.lbimage = ar;
+        interaction.client.db.config.updateOne({
+          id: interaction.guild.id
         }, {
           $set: {
-            lbimage: msgArr[2],
+            lbimage: ar,
           },
         }, {
           upsert: true
@@ -465,14 +460,14 @@ module.exports = {
           .setColor('#5b4194')
           .setDescription(`You have successfully set the leaderboard background to:`);
         try {
-          embed.setImage(msgArr[2]);
+          embed.setImage(ar);
         } catch (err) {
-          return message.channel.send('That is not a valid image!')
+          return interaction.reply('That is not a valid image!')
         }
-        message.channel.send({embeds: [embed]});
-      } else if (msgArr[2].toLowerCase() === 'remove') {
-        client.db.config.updateOne({
-          id: message.guild.id
+        interaction.reply({embeds: [embed]});
+      } else if (ar.toLowerCase() === 'remove') {
+        interaction.client.db.config.updateOne({
+          id: interaction.guild.id
         }, {
           $unset: {
             lbimage: ""
@@ -483,118 +478,83 @@ module.exports = {
         const doneembed = new Discord.MessageEmbed()
         .setColor('#5b4194')
         .setDescription('Leaderboard background has been removed!');
-        message.channel.send({embed: doneembed})
+        interaction.reply({embed: doneembed})
       } else {
-        message.channel.send('You must specify an image url!');
+        interaction.reply('You must specify an image url!');
       }
       // set lb image end
-    } else if (msgArr[1].toLowerCase() === 'cooldown') {
+    } else if (t.toLowerCase() === 'cooldown') {
       // cooldowns
-      if (!msgArr[3]) {
-        message.channel.send('Configure command cooldown using ;setcooldown <command_name> <duration_in_ms>');
+      if (!tr) {
+        interaction.reply('Configure command cooldown using ;setcooldown <command_name> <duration_in_ms>');
         return;
       }
-      const command = client.commands.get(msgArr[2].toLowerCase());
+      const command = interaction.client.commands.get(ar.toLowerCase());
       if (command) {
-        const duration = parseInt(msgArr[3], 10);
+        const duration = parseInt(tr, 10);
         if (isNaN(duration)) {
-          message.channel.send('cCnfigure command cooldown using ;setcooldown <command_name> <duration_in_ms>');
+          interaction.reply('Configure command cooldown using ;setcooldown <command_name> <duration_in_ms>');
           return;
         }
-        message.channel.send('Settings have been successfully applied!');
-        if (!config.cooldowns) {
-          config.cooldowns = {};
+        interaction.reply('Settings have been successfully applied!');
+        if (!interaction.client.db.config.cooldowns) {
+          interaction.client.db.config.cooldowns = {};
         }
-        config.cooldowns[command.name] = duration;
-        await client.db.config.updateOne({ id: message.guild.id }, { $set: { cooldowns: config.cooldowns } }, { upsert: true });
+        interaction.client.db.config.cooldowns[command.name] = duration;
+        await interaction.client.db.config.updateOne({ id: interaction.guild.id }, { $set: { cooldowns: interaction.client.db.config.cooldowns } }, { upsert: true });
       } else {
-        message.channel.send('Command not found!');
+        interaction.reply('Command not found!');
       }
       //end cooldowns
-    } else if (msgArr[1].toLowerCase() === 'requirefc') {
-      if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
-        return message.channel.send('You do not have permission to run this command!');
-      }
-      if (msgArr[2] === 'true' || msgArr[2] === 'false') {
-        client.db.islandinfo.updateOne(
-          { guildid: message.guild.id },
+    } else if (t.toLowerCase() === 'requirefc') {
+
+      if (ar === 'true' || ar === 'false') {
+        interaction.client.db.islandinfo.updateOne(
+          { guildid: interaction.guild.id },
           {
             $set: {
-              friendcoderequirement: msgArr[2],
+              friendcoderequirement: ar,
             },
           },
           { upsert: true },
         );
         const embedA = new Discord.MessageEmbed()
       .setColor('#5b4194')
-      .setDescription(`Friend code requirement has been set to **${msgArr[2]}**!`);
-      message.channel.send({embeds: [embedA]});
+      .setDescription(`Friend code requirement has been set to **${ar}**!`);
+      interaction.reply({embeds: [embedA]});
 
       } else {
-        message.channel.send('You must indicate true / false!');
+        interaction.reply('You must indicate true / false!');
       }
-    } else if (msgArr[1].toLowerCase() === 'togglerole') {
-
-      if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) { message.reply('You\'re not allowed to use this command!'); return; }
+    } else if (t.toLowerCase() === 'togglerole') {
       config.togglerole = !config.togglerole;
-      message.channel.send('Level up role toggle has been applied!');
-      await client.db.config.updateOne({ id: message.guild.id }, { $set: { togglerole: config.togglerole } }, { upsert: true });
+      interaction.reply('Level up role toggle has been applied!');
+      await interaction.client.db.config.updateOne({ id: interaction.guild.id }, { $set: { togglerole: config.togglerole } }, { upsert: true });
 
-    } else if (msgArr[1].toLowerCase() === 'djmode') {
-      //dj on or off start
-      if (msgArr.length >= 1) {
-        const guilddata = await client.db.config.findOne({
-          id: message.guild.id,
-        });
-        if (!msgArr[2]) {
-          return message.channel.send(`DJ mode is set to **${guilddata.djon}**!`);
-        } else {
-          if (msgArr[2].toLowerCase() === 'true' || msgArr[2].toLowerCase() === 'false') {
-            config.djon = msgArr[2];
-            client.db.config.updateOne({ id: message.guild.id }, {
-              $set: {
-                djon: msgArr[2],
-              },
-            }, { upsert: true });
-            const embed = new Discord.MessageEmbed()
-            .setColor('#5b4194')
-            .setDescription(`You have successfully set DJ mode to ${msgArr[2]}!`);
-            message.channel.send({embeds: [embed]});
-          } else if (!guilddata) {
-            return message.channel.send('DJ mode is set to **true**!');
-          } else {
-            message.channel.send('You can only specify true or false!');
-          }
-        }
-      }
-      //dj end
-    }  else if (msgArr[1].toLowerCase() === 'messagelog') {
-        if (message.author.id !== '620196347890499604' && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
-          return message.channel.send('You do not have permission to run this command!');
-        }
-        if (msgArr[2] === 'true' || msgArr[2] === 'false') {
-          client.db.islandinfo.updateOne(
-            { guildid: message.guild.id },
+    }  else if (t.toLowerCase() === 'messagelog') {
+        if (ar === 'true' || ar === 'false') {
+          interaction.client.db.islandinfo.updateOne(
+            { guildid: interaction.guild.id },
             {
               $set: {
-                messagelog: msgArr[2],
+                messagelog: ar,
               },
             },
             { upsert: true },
           );
           const embedA = new Discord.MessageEmbed()
         .setColor('#5b4194')
-        .setDescription(`Message deletion log has been set to **${msgArr[2]}**!`);
-        message.channel.send({embeds: [embedA]});
+        .setDescription(`Message deletion log has been set to **${ar}**!`);
+        interaction.reply({embeds: [embedA]});
 
       } else {
       const embed = new Discord.MessageEmbed()
       .setColor('RED')
       .setDescription('**Configuration not found. Available configurations are:** \neconomy\ntogglerole\ncooldown\ntogglefc\nfcrole\nprefix\ndjperms\ndjmode\nmodperms\ngaperms\nlevellog\npurchaselog\nwelcomechannel\nwelcomeimage\nsetlbimage')
-      return message.channel.send({embeds: [embed]})
+      return interaction.reply({embeds: [embed]})
 
   }
 }
-  }
+
   },
 };

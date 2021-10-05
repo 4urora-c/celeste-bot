@@ -1,112 +1,28 @@
 /* eslint-disable no-console */
 const Discord = require('discord.js');
-
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const data = [['character name', 'This is the name of your island character.'], ['island name', 'This is the name of your island.'], ['friend code', 'This is your friend code, found on your Switch profile.'], ['dream address', 'This is your dream address, found by sleeping in a bed and uploading your island.']]
 module.exports = {
-  name: 'set',
-  description: 'set',
-  execute: async (client, message) => {
-    const msgArr = message.content.split(' ');
-    let description = msgArr.slice(2).join(' ');
-    if (!msgArr[1]) {
-      message.channel.send('Usage of this command: `;set <island | da>`')
-    }
-    else if (msgArr[1] === 'island') {
+  data: new SlashCommandBuilder()
+    .setName('set')
+    .setDescription('Add your information to the Celeste database')
+    .addStringOption(option =>
+      option
+        .setName('setting')
+        .setDescription('Choose which item to input')
+        .addChoices(data)
+        .setRequired(true))
+    .addStringOption(option =>
+      option
+        .setName('info')
+        .setDescription('Input your information here')
+        .setRequired(true)),
+   async execute(interaction) {
+    const setting = interaction.options.getString('setting')
+    const info = interaction.options.getString('info')
+    if (setting === 'This is the name of your island.') {
       const name = 'Island';
-      if (msgArr[2]) {
-        const user = await client.db.islandinfo.findOne({
-          id: message.author.id,
-        });
-        let item;
-        if (user) {
-          if (user.moreinfo) {
-            item = user.moreinfo.find((entry) => entry.name === name);
-          }
-        }
-        if (item) {
-          item.description = description;
-          const embedA = new Discord.MessageEmbed()
-            .setColor('#5b4194')
-            .setDescription(`**${description}** has been set as your island name!`);
-          message.channel.send({
-            embeds: [embedA],
-          });
-          client.db.islandinfo.updateOne({
-            id: message.author.id,
-          }, {
-            $set: {
-              moreinfo: user.moreinfo,
-            },
-          }, {
-            upsert: true,
-          });
-          const guilddata = await client.db.islandinfo.findOne({
-            guildid: message.guild.id,
-          });
-          try {
-            if (guilddata.friendcoderequirement === 'false' && user.name) {
-              if (guilddata.moreinfo[0].name === 'roleinfo') {
-                message.member.roles.add(guilddata.moreinfo[0].description);
-              } else if (guilddata.moreinfo[1].name === 'roleinfo') {
-                message.member.roles.add(guilddata.moreinfo[1].description);
-              }
-            }
-          } catch (err) {
-            console.log(err);
-          }
-        } else {
-          client.db.islandinfo.updateOne({
-            id: message.author.id,
-          }, {
-            $push: {
-              moreinfo: {
-                name,
-                description,
-              },
-            },
-          }, {
-            upsert: true,
-          });
-          const guilddata = await client.db.islandinfo.findOne({
-            guildid: message.guild.id,
-          });
-          try {
-            if (guilddata.friendcoderequirement === 'false' && user.name) {
-              if (guilddata.moreinfo[0].name === 'roleinfo') {
-                message.member.roles.add(guilddata.moreinfo[0].description);
-              } else if (guilddata.moreinfo[1].name === 'roleinfo') {
-                message.member.roles.add(guilddata.moreinfo[1].description);
-              }
-            }
-          } catch (err) {
-            console.log(err);
-          }
-          const embedA = new Discord.MessageEmbed()
-            .setColor('#5b4194')
-            .setDescription(`**${description}** has been set as your island name!`);
-          message.channel.send({
-            embeds: [embedA],
-          });
-        }
-      } else {
-        message.channel.send('You must provide a name!');
-      }
-    } else if (msgArr[1] === 'da') {
-      let name = 'DA';
-
-      if (name.toLowerCase() === 'da') {
-        const isNum = /^\d+$/.test(msgArr[2]);
-        if (!isNum || msgArr[2].length !== 12) {
-          message.channel.send('Dream address must be 12 digits!');
-          return;
-        }
-        description = `DA-${msgArr[2].slice(0, 4)}-${msgArr[2].slice(4, 8)}-${msgArr[2].slice(8, 12)}`;
-      } else {
-        name = 'DA';
-      }
-
-      const user = await client.db.islandinfo.findOne({
-        id: message.author.id,
-      });
+      const user = await interaction.client.db.islandinfo.findOne({id: interaction.member.id})
       let item;
       if (user) {
         if (user.moreinfo) {
@@ -114,15 +30,15 @@ module.exports = {
         }
       }
       if (item) {
-        item.description = description;
+        item.description = info;
         const embedA = new Discord.MessageEmbed()
           .setColor('#5b4194')
-          .setDescription(`**DA-${msgArr[2].slice(0, 4)}-${msgArr[2].slice(4, 8)}-${msgArr[2].slice(8, 12)}** has been set as your dream address!`);
-        message.channel.send({
+          .setDescription(`**${info}** has been set as your island name!`);
+        interaction.reply({
           embeds: [embedA],
         });
-        client.db.islandinfo.updateOne({
-          id: message.author.id,
+        interaction.client.db.islandinfo.updateOne({
+          id: interaction.member.id,
         }, {
           $set: {
             moreinfo: user.moreinfo,
@@ -131,8 +47,10 @@ module.exports = {
           upsert: true,
         });
       } else {
-        client.db.islandinfo.updateOne({
-          id: message.author.id,
+        let moreinfo; 
+        moreinfo.description = info;
+        interaction.client.db.islandinfo.updateOne({
+          id: interaction.member.id,
         }, {
           $push: {
             moreinfo: {
@@ -145,47 +63,179 @@ module.exports = {
         });
         const embedA = new Discord.MessageEmbed()
           .setColor('#5b4194')
-          .setDescription(`**DA-${msgArr[2].slice(0, 4)}-${msgArr[2].slice(4, 8)}-${msgArr[2].slice(8, 12)}** has been set as your dream address!`);
-        message.channel.send({
+          .setDescription(`**${info}** has been set as your island name!`);
+        interaction.reply({
           embeds: [embedA],
         });
       }
-    } else if (msgArr[1] === 'name') {
-      const guilddata2 = await client.db.islandinfo.findOne({
-        guildid: message.guild.id,
+    }
+    else if (setting === 'This is the name of your island character.') {
+      const guilddata2 = await interaction.client.db.islandinfo.findOne({
+        guildid: interaction.guild.id,
       });
-      const userdata2 = await client.db.islandinfo.findOne({ id: message.member.id });
-      if (msgArr[2]) {
-        if (msgArr.slice(2).join(' ').length > 10) {
-          return message.channel.send('This name is too long!')
+      const userdata2 = await interaction.client.db.islandinfo.findOne({ id: interaction.member.id });
+        if (info.length > 10) {
+          return interaction.reply({content: 'This name is too long!'})
         }
-        client.db.islandinfo.updateOne(
-          { id: message.author.id },
+        interaction.client.db.islandinfo.updateOne(
+          { id: interaction.member.id },
           {
             $set: {
-              name: msgArr.slice(2).join(' '),
+              name: info,
             },
           },
           { upsert: true },
         );
-        try {
-          if (userdata2.moreinfo[0].name === 'Island' && guilddata2.friendcoderequirement === 'false') {
-            message.member.roles.add(guilddata2.moreinfo[0].description);
-          } else if (userdata2.moreinfo[1].name === 'Island' && guilddata2.friendcoderequirement === 'false') {
-            message.member.roles.add(guilddata2.moreinfo[1].description);
-          }
-        } catch (err) {
-          console.log(`Missing island info for ${message.author.tag} or server does not have role set.`);
-        }
         const embedA = new Discord.MessageEmbed()
           .setColor('#5b4194')
-          .setDescription(`Your name has been set to **${msgArr.slice(2).join(' ')}**!`);
-        message.channel.send({ embeds: [embedA] });
-      } else {
-        message.channel.send('You must provide a name!');
+          .setDescription(`Your name has been set to **${info}**!`);
+        interaction.reply({ embeds: [embedA] });
       }
-    } else {
-      message.channel.send(`'**${msgArr[1]}**' is not a valid entry!`);
-    }
+      else if (setting === 'This is your dream address, found by sleeping in a bed and uploading your island.') {
+        let name = 'DA';
+
+        if (name.toLowerCase() === 'da') {
+          const isNum = /^\d+$/.test(info);
+          if (!isNum || info.length !== 12) {
+            interaction.reply({content: 'Dream address must be 12 digits!'});
+            return;
+          }
+          description = `DA-${info.slice(0, 4)}-${info.slice(4, 8)}-${info.slice(8, 12)}`;
+        } else {
+          name = 'DA';
+        }
+
+        const user = await interaction.client.db.islandinfo.findOne({
+          id: interaction.member.id,
+        });
+        let item;
+        if (user) {
+          if (user.moreinfo) {
+            item = user.moreinfo.find((entry) => entry.name === name);
+          }
+        }
+        if (item) {
+          item.description = description;
+          const embedA = new Discord.MessageEmbed()
+            .setColor('#5b4194')
+            .setDescription(`**DA-${info.slice(0, 4)}-${info.slice(4, 8)}-${info.slice(8, 12)}** has been set as your dream address!`);
+          interaction.reply({
+            embeds: [embedA],
+          });
+          interaction.client.db.islandinfo.updateOne({
+            id: interaction.author.id,
+          }, {
+            $set: {
+              moreinfo: user.moreinfo,
+            },
+          }, {
+            upsert: true,
+          });
+        } else {
+          interaction.client.db.islandinfo.updateOne({
+            id: interaction.member.id,
+          }, {
+            $push: {
+              moreinfo: {
+                name,
+                description,
+              },
+            },
+          }, {
+            upsert: true,
+          });
+          const embedA = new Discord.MessageEmbed()
+            .setColor('#5b4194')
+            .setDescription(`**DA-${info.slice(0, 4)}-${info.slice(4, 8)}-${info.slice(8, 12)}** has been set as your dream address!`);
+          interaction.reply({
+            embeds: [embedA],
+          });
+        }
+      }
+    else if (setting === 'This is your friend code, found on your Switch profile.') {
+
+              let name = 'Friend Code';
+
+              if (name === 'Friend Code') {
+                const isNum = /^\d+$/.test(info);
+                if (!isNum || info.length !== 12) {
+                  interaction.reply({content: 'Friend code must be 12 digits!'} );
+                  return;
+                }
+                description = `SW-${info.slice(0, 4)}-${info.slice(4, 8)}-${info.slice(8, 12)}`;
+              } else {
+                name = "Friend Code";
+              }
+
+              const user = await interaction.client.db.islandinfo.findOne({
+                id: interaction.member.id
+              });
+              let item;
+              if (user) {
+                if (user.moreinfo) {
+                  item = user.moreinfo.find((entry) => entry.name === name);
+                }
+              }
+              if (item) {
+                item.description = description;
+                const embedA = new Discord.MessageEmbed()
+                  .setColor('#5b4194')
+                  .setDescription(`**SW-${info.slice(0, 4)}-${info.slice(4, 8)}-${info.slice(8, 12)}** has been set as your friend code!`);
+                interaction.reply({
+                  embeds: [embedA]
+                });
+                interaction.client.db.islandinfo.updateOne({
+                  id: interaction.member.id
+                }, {
+                  $set: {
+                    moreinfo: user.moreinfo,
+                  },
+                }, {
+                  upsert: true
+                }, );
+              } else {
+                interaction.client.db.islandinfo.updateOne({
+                  id: interaction.member.id
+                }, {
+                  $push: {
+                    moreinfo: {
+                      name,
+                      description,
+                    },
+                  },
+                }, {
+                  upsert: true
+                }, );
+                const embedA = new Discord.MessageEmbed()
+                  .setColor('#5b4194')
+                  .setDescription(`**SW-${info.slice(0, 4)}-${info.slice(4, 8)}-${info.slice(8, 12)}** has been set as your friend code!`);
+                interaction.reply({
+                  embeds: [embedA]
+                });
+              }
+              try {
+                const guilddata = await interaction.client.db.islandinfo.findOne({
+                  guildid: interaction.guild.id
+                });
+                if (guilddata.friendcoderequirement === 'true') {
+                  const exists = await interaction.client.db.islandinfo.findOne({
+                    guildid: interaction.guild.id.guildid
+                  });
+                  if (exists) {
+                    if (guilddata.moreinfo[0].name === 'roleinfo') {
+                      interaction.member.roles.add(`${guilddata.moreinfo[0].description}`);
+                    } else if (guilddata.moreinfo[1].name === 'roleinfo') {
+                      interaction.member.roles.add(`${guilddata.moreinfo[1].description}`);
+                    }
+                  }
+                }
+              } catch (err) {
+                //console.log(`No role or friend code setting found for server ${message.guild}`)
+                console.log(err.stack)
+                return;
+              }
+      }
+
+
   },
 };
