@@ -102,7 +102,6 @@ module.exports = {
       });
       if (userdata) {
         const embed = new Discord.MessageEmbed()
-          .setmember(user2.tag, user2.avatarURL())
           .setThumbnail(user2.avatarURL());
         try {
           if (userdata.moreinfo[1].name === 'Friend Code') {
