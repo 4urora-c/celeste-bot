@@ -6,7 +6,7 @@ const Discord = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('join')
+    .setName('add')
     .setDescription('Use this when you are ready to join the rest of the server')
     .addStringOption(option =>
       option
