@@ -29,7 +29,7 @@ module.exports = {
            .setTitle('Joining the server')
            .setDescription(`Please welcome ${interaction.member} to the server!`)
            await i.update({ embeds: [embed], components: [] });
-           return interaction.member.roles.add(interaction.guild.roles.cache.find((r => r.name === 'Basic')))
+           return interaction.member.roles.add(interaction.guild.roles.cache.find((r => r.name.toLowerCase() === 'basic')))
          } else if (i.customId === 'reject') {
            const embed = new Discord.MessageEmbed()
            .setTitle('Joining the server')
