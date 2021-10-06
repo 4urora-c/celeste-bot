@@ -40,8 +40,8 @@ module.exports = {
         if (userdata.alts) {
           embed.addField('Alt Account', userdata.alts);
         }
+                interaction.reply({embeds: [embed]});
       }
-        interaction.reply({embeds: [embed]});
       } else if (!user) {
         const userdata = await interaction.client.db.islandinfo.findOne({ id: interaction.member.id });
         if (userdata) {
