@@ -1,7 +1,7 @@
 const commandsToSetPermissions = ['ban, reactionrole'];
 const adminCommands = ['refresh', 'ban', 'reactionrole', 'add', 'config', 'fcrole'];
 const basicdeny = ['join'];
-const basicallow = ['leaderboard', 'profile', 'island', 'set']
+const basicallow = ['leaderboard', 'profile', 'island', 'set', 'balance']
 module.exports = {
     async refreshCommandPermissionsClient(client) {
         let guildCounter = 0;
