@@ -29,8 +29,15 @@ const client = new Discord.Client({
 });
 client.commands = new Discord.Collection();
 client.slashCommands = new Discord.Collection();
+client.buttons = new Discord.Collection();
 const commands = [];
 const rest = new REST({ version: '9' }).setToken(token);
+
+const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
+for (const file of buttonFiles) {
+  const button = require(`./buttons/${file}`);
+  client.buttons.set(button.data.name, button);
+}
 
 const distube = new DisTube(client, {
   searchSongs: true,
@@ -97,14 +104,25 @@ client.on('messageDelete', messageDelete => {
 });
 
 client.on('interactionCreate', async interaction => {
-  if (!interaction.isCommand()) return;
-  const command = client.slashCommands.get(interaction.commandName);
-  if (!command) return;
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    if (error) console.error(error);
-    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+  if (interaction.isCommand()) {
+    const command = client.slashCommands.get(interaction.commandName);
+    if (!command) return;
+    try {
+      await command.execute(interaction);
+    } catch (error) {
+      if (error) console.error(error);
+      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    }
+  }
+  else if (interaction.isButton()) {
+    try {
+      if (['standButton', 'hitButton', 'doubleButton', 'foldButton'].includes(interaction.customId)) {
+        await client.buttons.get('blackjack').execute(interaction);
+      }
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({ content: 'Es gab einen Fehler bei der Ausführung dieses Befehls!', ephemeral: true });
+    }
   }
 });
 
@@ -146,24 +164,24 @@ fs.readdir('./events/', async (err, files) => {
   await importAllFiles('./commands/');
   (async () => {
     try {
-			if (!guildId) {
-				await rest.put(
-					Routes.applicationCommands(clientId), {
-						body: commands
-					},
-				);
-				console.log('Successfully registered application commands globally');
-			} else {
-				await rest.put(
-					Routes.applicationGuildCommands(clientId, guildId), {
-						body: commands
-					},
-				);
-				console.log('Successfully registered application commands for development guild');
-			}
-		} catch (error) {
-			if (error) console.error(error);
-		}
+      if (!guildId) {
+        await rest.put(
+          Routes.applicationCommands(clientId), {
+          body: commands
+        },
+        );
+        console.log('Successfully registered application commands globally');
+      } else {
+        await rest.put(
+          Routes.applicationGuildCommands(clientId, guildId), {
+          body: commands
+        },
+        );
+        console.log('Successfully registered application commands for development guild');
+      }
+    } catch (error) {
+      if (error) console.error(error);
+    }
   })();
   files.forEach((file) => {
     if (!file.endsWith('.js')) return;
