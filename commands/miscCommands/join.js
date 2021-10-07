@@ -21,7 +21,7 @@ module.exports = {
       .setLabel('No')
       .setStyle('DANGER')
     );
-    const collector = interaction.channel.createMessageComponentCollector({time: 15000 });
+    const collector = interaction.channel.createMessageComponentCollector({time: 60000 });
     await interaction.reply({embeds: [embed], components: [row]});
     collector.on('collect', async i => {
 	     if (i.customId === 'accept') {

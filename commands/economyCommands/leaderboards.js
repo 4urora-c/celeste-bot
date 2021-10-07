@@ -23,7 +23,6 @@ data: new SlashCommandBuilder()
     const guilddata2 = await interaction.client.db.config.findOne({
       id: interaction.guild.id,
     });
-    console.log(data)
   //  let background = await Canvas.loadImage(guilddata2.lbimage ? guilddata2.lbimage : 'img/leaderboards/leaderboardsbg1.png');
   //  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 

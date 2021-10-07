@@ -3,32 +3,79 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-await-in-loop */
 const Discord = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
-  name: 'remove',
-  description: 'remove',
-  aliases: [],
-  usage: 'remove @user <amount>',
-  execute: async (client, message, config) => {
-    const guilddata = await client.db.config.findOne({
-      id: message.guild.id,
+  data: new SlashCommandBuilder()
+    .setName('remove')
+    .setDescription('Remove currency from users or roles')
+    .setDefaultPermission(false)
+    .addMentionableOption(option =>
+      option
+        .setName('target')
+        .setDescription('The target user(s) to add currency to')
+        .setRequired(true))
+    .addStringOption(option =>
+      option
+        .setName('amount')
+        .setDescription('The amount of currency to add')
+        .setRequired(true))
+     .addStringOption(option =>
+       option
+        .setName('override')
+        .setDescription('The amount of currency to add')),
+  async execute(interaction) {
+    const guilddata = await interaction.client.db.config.findOne({
+      id: interaction.guild.id,
     });
     if (!guilddata.economy || guilddata.economy === 'true') {
-    if (!message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has('ADMINISTRATOR'))) { message.reply('You\'re not allowed to use this command!'); return; }
-    const msgArr = message.content.split(' ');
-    const target = message.mentions.members.first() || message.guild.members.cache.get(msgArr[1]);
-    const amount = parseInt(msgArr[2], 10);
-    const guilddata = await client.db.islandinfo.findOne({ guildid: message.guild.id });
+    let target = interaction.options.getMentionable('target')
+    let amount = parseInt(interaction.options.getString('amount'), 10);
+    const guilddata = await interaction.client.db.islandinfo.findOne({ guildid: interaction.guild.id });
     if (isNaN(amount)) {
-      message.channel.send('Enter a valid amount to remove');
+      interaction.reply('Enter a valid amount to add');
       return;
+    }
+    const premium = interaction.options.getString('override')
+    if (premium && premium === 'premium') {
+      target = 'premium'
+    }
+    if (target === 'premium') {
+      target = 'premium users'
+      let i = 0;
+      const user = await interaction.client.db.islandinfo.find().toArray()
+      async function complete() {
+        const embed = new Discord.MessageEmbed()
+        .setColor('GREEN')
+        .setDescription(`✅ ${interaction.member} removed ${amount} ${guilddata.currencyname ? guilddata.currencyname : 'Bells'} from ${i} ${target}!`);
+        interaction.reply({embeds: [embed]})
+      }
+      function addPremium(amt) {
+        user.forEach(check => {
+          try {
+          if (check.hasPremium === 'true') {
+            i ++;
+           interaction.client.db.userdata.updateOne({id: check.id, guildID: interaction.guild.id}, {$inc: {coins: -amount}}, {upsert: true})
+         } } catch(err) {}
+        })
+      }
+      addPremium(amount)
+      return complete();
     }
     const embed = new Discord.MessageEmbed()
     .setColor('#5b4194')
-    .setDescription(`✅ ${message.author} removed ${amount} ${guilddata.currencyname ?  guilddata.currencyname : 'Bells'} from ${target}!`);
-    message.channel.send({embeds: [embed]});
-    await client.db.userdata.updateOne({ id: target.id, guildID: message.guild.id }, { $inc: { coins: -amount } }, { upsert: true });
-  } else {
-    return message.channel.send('Economy is disabled on this guild!');
+    .setDescription(`✅ ${interaction.member} removed ${amount} ${guilddata.currencyname ? guilddata.currencyname : 'Bells'} from ${target}!`);
+    const isRole = interaction.guild.roles.cache.has(target.id);
+    if (!isRole) {
+    await interaction.client.db.userdata.updateOne({ id: target.id, guildID: interaction.guild.id }, { $inc: { coins: -amount } }, { upsert: true });
+    interaction.reply({embeds: [embed]});
+  } else if (isRole) {
+    target.members.forEach(async updateuser => {
+    await interaction.client.db.userdata.updateOne({ id: updateuser.id, guildID: interaction.guild.id }, { $inc: {coins: -amount } }, { upsert : true });
+    });
+    interaction.reply({embeds: [embed]});
   }
-},
+  } else {
+    return interaction.reply('Economy is disabled on this guild!');
+  }
+  },
 };
