@@ -4,10 +4,11 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-await-in-loop */
 
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageActionRow } = require('discord.js');
 const config = require('../../config');
 const generateCard = require('../../utils/generateCard');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { standButton, hitButton, doubleButton, foldButton } = require('../../utils/buttons');
 
 const getBlackjackValue = (hand) => {
   let value = 0;
@@ -31,7 +32,7 @@ const getBlackjackValue = (hand) => {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('blackjack')
+    .setName('blackjackslash')
     .setDescription('blackjack')
     .addIntegerOption(option =>
       option
@@ -90,8 +91,12 @@ module.exports = {
             .addField('Dealer hand', `${dealerHand.slice(0, 1).map((item) => `${item[1]} ${item[0]}`).join(', ')}\nTotal: **${getBlackjackValue(dealerHand.slice(0, 1))}**`, true)
             .addField('Commands', '**stand** to see dealer\'s cards\n**hit** draw another card\n**double** to double down\n**fold** give up but you lose half of your bet')
             .setFooter('You have 90 seconds');
+          
+            const row = new MessageActionRow().addComponents(standButton, hitButton, doubleButton, foldButton);
 
-          await interaction.reply({ embeds: [embedMessage] });
+            await interaction.reply({ embeds: [embedMessage], components: [row], fetchReply: true }).then(i =>
+              setTimeout(() => i.edit({ embeds: [embedMessage.setFooter('Time is over')], components: [] }), 90 * 1000) //update footer after 90 seconds
+            );
 
           const filter = (m) => {
             const isAuthor = m.author.id === interaction.user.id;
