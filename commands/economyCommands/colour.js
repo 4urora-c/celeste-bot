@@ -20,15 +20,16 @@ module.exports = {
       const role = interaction.guild.roles.cache.find(x => x.name === interaction.member.id);
       if (!role) {
         await interaction.deferReply()
-        interaction.guild.roles.create({
+        const create = await interaction.guild.roles.create({
           name: interaction.member.id,
           color: interaction.options.getString('hex'),
           position: 76
-        }).catch(interaction.editReply(console.error))
+        }).catch(console.error)
+        interaction.member.roles.add(create)
         interaction.editReply('A colour role has been added to you!')
       } else {
         await interaction.deferReply()
-        role.edit({color: interaction.options.getString('hex')}).catch(interaction.editReply(console.error))
+        role.edit({color: interaction.options.getString('hex')}).catch(console.error)
         interaction.member.roles.add(role)
         interaction.editReply('Your colour role has been edited and added to you!')
       }
