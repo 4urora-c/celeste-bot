@@ -30,10 +30,10 @@ module.exports = {
           color: interaction.options.getString('hex'),
           position: 76
         }).catch(console.error)
+        interaction.member.roles.add(create)
       } catch(e) {
         return interaction.reply('This colour does not exist!')
       }
-        interaction.member.roles.add(create)
         interaction.editReply('A colour role has been added to you!')
       } else {
         await interaction.deferReply()
