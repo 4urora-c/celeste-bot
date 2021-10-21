@@ -1,5 +1,5 @@
-const commandsToSetPermissions = ['ban, reactionrole'];
-const adminCommands = ['refresh', 'ban', 'reactionrole', 'add', 'config', 'fcrole', 'remove'];
+const commandsToSetPermissions = ['ban, reactionrole', 'warn'];
+const adminCommands = ['refresh', 'ban', 'reactionrole', 'add', 'config', 'fcrole', 'remove', 'warn'];
 const basicdeny = ['join'];
 const basicallow = ['leaderboard', 'profile', 'island', 'set', 'balance', 'blackjack']
 const supportercommands = ['setcolour']

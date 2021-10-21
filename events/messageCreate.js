@@ -57,7 +57,7 @@ module.exports = (client, distube, message) => {
             .setDescription(`**\[${date()}\] ${message.member.displayName}**: ${message.content}`)
             .addField('Source', `[Jump to](${message.url})`)
             .setTimestamp()
-            discordUser.send(`In **${message.guild.name}** ${message.channel}, your highlight "${triggeredWord}" was mentioned.`, embed);
+            discordUser.send({embeds: [embed], content: `In **${message.guild.name}** ${message.channel}, your highlight "${triggeredWord}" was mentioned.`});
       }
     }
   }
@@ -93,7 +93,7 @@ module.exports = (client, distube, message) => {
       }
     }
   } catch(err) {
-  
+
   }
   }
   if (message.content.includes('@everyone') || message.content.includes('@here')) {
