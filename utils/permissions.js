@@ -2,7 +2,6 @@ const commandsToSetPermissions = ['ban, reactionrole'];
 const adminCommands = ['refresh', 'ban', 'reactionrole', 'add', 'config', 'fcrole', 'remove'];
 const basicdeny = ['join'];
 const basicallow = ['leaderboard', 'profile', 'island', 'set', 'balance', 'blackjack']
-const supportercommands = ['setcolour']
 module.exports = {
     async refreshCommandPermissionsClient(client) {
         let guildCounter = 0;
@@ -62,25 +61,6 @@ module.exports = {
                       id: currentGuild.roles.cache.find(r=> r.name.toLowerCase() === 'basic').id,
                       type: 'ROLE',
                       permission: false,
-                    }];
-                    await currentCommand.permissions.add({ permissions });
-                }
-                if (supportercommands.includes(currentCommand.name)) {
-                    console.log('Refreshed permissions in ' + currentGuild.name + " for " + currentCommand.name);
-                    const permissions = [{
-                          id: '620196347890499604',
-                          type: 'USER',
-                          permission: true,
-                      },
-                    {
-                      id: currentGuild.roles.cache.find(r=> r.name.toLowerCase() === 'supporter').id,
-                      type: 'ROLE',
-                      permission: true,
-                    },
-                    {
-                      id: currentGuild.roles.cache.find(r=> r.name.toLowerCase() === 'booster').id,
-                      type: 'ROLE',
-                      permission: true,
                     }];
                     await currentCommand.permissions.add({ permissions });
                 }
