@@ -40,14 +40,13 @@ for (const file of buttonFiles) {
 }
 
 const distube = new DisTube(client, {
-  searchSongs: true,
+  searchSongs: 10,
   emitNewSongOnly: true
 });
 const status = (queue) => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filter || 'Off'}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? 'All Queue' : 'This Song' : 'Off'}\` | Autoplay: \`${queue.autoplay ? 'On' : 'Off'}\``;
 distubeListeners(distube, status);
 
 client.on('ready', () => {
-  permissions.refreshCommandPermissionsClient(client);
   //permissions.refreshCommandPermissionsGlobal(client);  //for global permissions, means private dms, all servers etc.
 
   client.guilds.cache.forEach((server) => {
@@ -197,4 +196,4 @@ const testServer = client.guilds.cache.get(guildId)
 console.log(testServer ? testServer.commands.fetch() : 'No server found')
 client.login(token);
 
-module.exports = client;
+module.exports = client, distube;
