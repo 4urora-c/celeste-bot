@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 const initializeGuild = require('../utils/initializeGuild');
-const gainExp = require('../utils/gainExp');
 const msToString = require('../utils/msToString');
 const Discord = require('discord.js');
 module.exports = (client, distube, message) => {
@@ -143,7 +142,6 @@ module.exports = (client, distube, message) => {
       message.reply('There was an error executing your command!');
     }
   } else {
-    gainExp(client, message, config);
     try {
     checkHighlights();
     checkBoostStatus();
