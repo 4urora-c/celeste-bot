@@ -67,9 +67,9 @@ client.on('guildMemberAdd', newMember => { //when someone new joins a guild
         .setColor('RED')
         .setDescription('Your account has been kicked from Polaris as it is too new. Please come back when your account is more than 7 days old or you have changed your profile picture.')
         .setTimestamp();
-      newMember.send({
-        embed: newMemberBan
-      });
+        try {
+      newMember.send({embeds: [newMemberBan]});
+    } catch(e){};
       newMember.kick();
     }
   } catch (err) {
@@ -111,16 +111,6 @@ client.on('interactionCreate', async interaction => {
     } catch (error) {
       if (error) console.error(error);
       await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-    }
-  }
-  else if (interaction.isButton()) {
-    try {
-      if (['standButton', 'hitButton', 'doubleButton', 'foldButton'].includes(interaction.customId)) {
-        await client.buttons.get('blackjack').execute(interaction);
-      }
-    } catch (error) {
-      console.error(error);
-      await interaction.reply({ content: 'Es gab einen Fehler bei der Ausführung dieses Befehls!', ephemeral: true });
     }
   }
 });
