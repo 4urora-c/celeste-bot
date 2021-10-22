@@ -4,7 +4,8 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
   data: new SlashCommandBuilder()
       .setName('stonks')
-      .setDescription(`Honestly, the name of this command would be 'maxbells' if it were my choice.`),
+      .setDescription(`Honestly, the name of this command would be 'maxbells' if it were my choice.`)
+      .setDefaultPermission(false),
     async execute(interaction) {
     const embed = new Discord.MessageEmbed()
     .setAuthor('HOW TO')

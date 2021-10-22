@@ -1,7 +1,7 @@
 const commandsToSetPermissions = ['ban, reactionrole', 'warn'];
 const adminCommands = ['refresh', 'ban', 'reactionrole', 'add', 'config', 'fcrole', 'remove', 'warn'];
 const basicdeny = ['join'];
-const basicallow = ['leaderboard', 'profile', 'island', 'set', 'balance', 'blackjack']
+const basicallow = ['leaderboard', 'profile', 'island', 'set', 'balance', 'blackjack', 'stonks']
 const supportercommands = ['setcolour']
 module.exports = {
     async refreshCommandPermissionsClient(client) {
