@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const { getTracks, getPreview } = require("spotify-url-info")
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
   data: new SlashCommandBuilder()
       .setName('stonks')
