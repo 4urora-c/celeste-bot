@@ -69,7 +69,7 @@ client.on('guildMemberAdd', newMember => { //when someone new joins a guild
         .setDescription('Your account has been kicked from Polaris as it is too new. Please come back when your account is more than 7 days old or you have changed your profile picture.')
         .setTimestamp();
         try {
-      newMember.send({embeds: [newMemberBan]});
+      newMember.send({embeds: [newMemberBan]}).then(newMember.kick()).catch(newMember.kick());
     } catch(e){};
       newMember.kick();
     }
