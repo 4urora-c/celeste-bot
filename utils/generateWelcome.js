@@ -10,9 +10,9 @@ const generateWelcome = async (user, guildname) => {
  const guilddata = await client.db.config.findOne({
   id: guildname.id,
   });
-  /* const img = new Image();
-  img.src = guilddata.welcomeimage; */
-  /*const background = await Canvas.loadImage(guilddata.welcomeimage ? guilddata.welcomeimage : 'img/welcome.png');
+  const img = new Canvas.Image();
+  img.src = guilddata.welcomeimage;
+  const background = await Canvas.loadImage(guilddata.welcomeimage ? 'https://cdn.discordapp.com/attachments/766679330524233779/823161183753863188/image0.png' : 'img/welcome.png');
   ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
   // Print name
@@ -40,9 +40,9 @@ const generateWelcome = async (user, guildname) => {
   ctx.clip();
 
   const avatar = await Canvas.loadImage(user.displayAvatarURL({ format: 'jpg' }));
-  ctx.drawImage(avatar, profileX, profileY, profileWidth, profileHeight);*/
+  ctx.drawImage(avatar, profileX, profileY, profileWidth, profileHeight);
 
-  //const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.png');
+  const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.png');
   return attachment;
 };
 //}
