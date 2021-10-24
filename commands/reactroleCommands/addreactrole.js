@@ -24,7 +24,8 @@ module.exports = {
             currentBotMessage = await message.channel.send('> Input the role name');
             const filter = (m) => m.author.id === message.author.id;
             const filter2 = (r, u) => u.id === message.author.id;
-            message.channel.awaitMessages(filter, {
+            message.channel.awaitMessages({
+              filter,
               max: 1,
               time: 1000 * 60 * 60,
               errors: [],
@@ -35,7 +36,8 @@ module.exports = {
               currentBotMessage.delete();
               if (role) {
                 await message.channel.send('> React the reaction you want to use in this message').then((newMessage) => {
-                  newMessage.awaitReactions(filter2, {
+                  newMessage.awaitReactions({
+                    filter2,
                     max: 1,
                     time: 1000 * 60 * 60,
                     errors: [],
