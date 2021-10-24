@@ -64,15 +64,7 @@ client.on('guildMemberAdd', newMember => { //when someone new joins a guild
   }); //Update the activity every time someone joins a guild
   try {
     if ((Date.now() - newMember.user.createdAt < 1000 * 60 * 60 * 24 * 30) && newMember.user.displayAvatarURL() === 'https://cdn.discordapp.com/embed/avatars/0.png') {
-      const newMemberBan = new Discord.MessageEmbed()
-        .setColor('RED')
-        .setDescription('Your account has been kicked from Polaris as it is too new. Please come back when your account is more than 7 days old or you have changed your profile picture.')
-        .setTimestamp();
-        try {
-      newMember.send({embeds: [newMemberBan]}).then(newMember.kick()).catch(newMember.kick());
-    } catch(e){};
       newMember.kick();
-    }
   } catch (err) {
     console.log(err.stack)
   }
