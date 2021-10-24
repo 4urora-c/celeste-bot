@@ -10,7 +10,8 @@ module.exports = {
     .setDescription('DANGER: Refreshes client permissions! Use only if necessary.')
     .setDefaultPermission(false),
   async execute(interaction) {
-    perms.refreshCommandPermissionsClient(interaction.client)
-    interaction.reply('Client permissions have been refreshed')
+    await interaction.deferReply();
+    await perms.refreshCommandPermissionsClient(interaction.client)
+    await interaction.editReply('Client permissions have been refreshed')
   }
 };
