@@ -12,7 +12,7 @@ const generateWelcome = async (user, guildname) => {
   });
   const img = new Canvas.Image();
   img.src = guilddata.welcomeimage;
-  const background = await Canvas.loadImage(guilddata.welcomeimage ? 'https://cdn.discordapp.com/attachments/766679330524233779/823161183753863188/image0.png' : 'img/welcome.png');
+  const background = await Canvas.loadImage('img/welcome.png');
   ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
   // Print name
