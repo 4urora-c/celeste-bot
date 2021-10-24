@@ -11,20 +11,21 @@ const token = config.token;
 const distubeListeners = require('./utils/music/distubeListeners');
 const permissions = require('./utils/permissions');
 const client = new Discord.Client({
+  partials: ["USER", "CHANNEL", "MESSAGE", "REACTION"],
   intents: ["DIRECT_MESSAGES",
-    "GUILDS",
-    "GUILD_MEMBERS",
-    "GUILD_MESSAGES",
-    "GUILD_PRESENCES",
-    "GUILD_BANS",
-    "GUILD_MESSAGE_REACTIONS",
-    "DIRECT_MESSAGE_REACTIONS",
-    "GUILD_EMOJIS_AND_STICKERS",
-    "GUILD_MESSAGE_TYPING",
-    "GUILD_WEBHOOKS",
-    "GUILD_INTEGRATIONS",
-    "GUILD_PRESENCES",
-    "GUILD_INVITES"
+    Discord.Intents.FLAGS.GUILDS,
+    Discord.Intents.FLAGS.GUILD_MEMBERS,
+    Discord.Intents.FLAGS.GUILD_MESSAGES,
+    Discord.Intents.FLAGS.GUILD_PRESENCES,
+    Discord.Intents.FLAGS.GUILD_BANS,
+    Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+    Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+    Discord.Intents.FLAGS.GUILD_MESSAGE_TYPING,
+    Discord.Intents.FLAGS.GUILD_WEBHOOKS,
+    Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
+    Discord.Intents.FLAGS.GUILD_PRESENCES,
+    Discord.Intents.FLAGS.GUILD_INVITES
   ]
 });
 client.commands = new Discord.Collection();

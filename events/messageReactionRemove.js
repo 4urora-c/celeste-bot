@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
 module.exports = (client, distube, reaction, user) => {
-  if (user.bot) { return; }
   if (client.reactrolelocal) {
     const reactRoleObj = client.reactrolelocal.find((item) => item.id === reaction.message.id);
     if (reactRoleObj) {
