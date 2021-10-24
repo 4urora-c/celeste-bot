@@ -225,9 +225,9 @@ module.exports = {
                   });
                   if (exists) {
                     if (guilddata.moreinfo[0].name === 'roleinfo') {
-                      interaction.member.roles.add(`${guilddata.moreinfo[0].description}`);
+                      interaction.member?.roles.add(`${guilddata.moreinfo[0].description}`);
                     } else if (guilddata.moreinfo[1].name === 'roleinfo') {
-                      interaction.member.roles.add(`${guilddata.moreinfo[1].description}`);
+                      interaction.member?.roles.add(`${guilddata.moreinfo[1].description}`);
                     }
                   }
                 }
