@@ -65,9 +65,6 @@ client.on('guildMemberAdd', newMember => { //when someone new joins a guild
   try {
     if ((Date.now() - newMember.user.createdAt < 1000 * 60 * 60 * 24 * 30) && newMember.user.displayAvatarURL() === 'https://cdn.discordapp.com/embed/avatars/0.png') {
       newMember.kick();
-  } catch (err) {
-    console.log(err.stack)
-  }
 });
 client.on('messageDelete', messageDelete => {
   let mlog = client.db.islandinfo.findOne({
