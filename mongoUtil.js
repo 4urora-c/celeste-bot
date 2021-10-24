@@ -6,7 +6,7 @@ const client = new MongoClient(uri, {autoIndex: false});
 
 module.exports = {
   connectDB: async () => {
-    await client.connect();
+    await client.connect({autoIndex: false});
     console.log('mongoDB is now connected!');
     return client;
   },

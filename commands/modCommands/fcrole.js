@@ -13,22 +13,21 @@ module.exports = {
         .setDescription('The target role to configure as fcrole')
         .setRequired(true)),
   async execute(interaction) {
+    await interaction.deferReply();
     const guild = await interaction.client.db.islandinfo.findOne({ guildid: interaction.guild.id });
     const ar = interaction.options.getRole('target')
-    const name = 'roleinfo';
     let description = ar;
-    if (ar) {
     let item = ar.id
-    if (guild) {
-      if (guild.moreinfo) { item = guild.moreinfo.find((entry) => entry.name === name); }
+   if (guild) {
+      if (guild.moreinfo) { item = guild.moreinfo.find((entry) => entry.name === 'roleinfo'); }
     }
     if (item) {
-      item.description = item;
-      const moreinfo = item;
+      item.description = ar.id;
+      const moreinfo = ar.id;
       const embedA = new Discord.MessageEmbed()
     .setColor('#5b4194')
     .setDescription(`Guild role has been set to **${ar}**!`);
-    interaction.reply({embeds: [embedA]});
+    interaction.editReply({embeds: [embedA]});
       interaction.client.db.islandinfo.updateOne(
         { guildid: interaction.guild.id },
         {
@@ -54,8 +53,7 @@ module.exports = {
     const embedA = new Discord.MessageEmbed()
     .setColor('#7cdda5')
     .setDescription(`Guild role has been set to ${ar}`);
-    interaction.reply({embeds: [embedA]});
+    interaction.editReply({embeds: [embedA]});
     }
-  }
 }
 };
