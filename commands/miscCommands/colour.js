@@ -11,7 +11,7 @@ module.exports = {
           .setRequired(true))
       .setDefaultPermission(false),
   async execute (interaction) {
-    if(interaction.member.roles.cache.some(r => r.name === interaction.member.id)) {
+    if(interaction.member?.roles.cache.some(r => r.name === interaction.member.id)) {
       const role = interaction.guild.roles.cache.find(x => x.name === interaction.member.id);
       await interaction.deferReply()
       try {
@@ -21,7 +21,7 @@ module.exports = {
     }
       interaction.editReply('Your colour role has been edited!')
     } else {
-      const role = interaction.guild.roles.cache.find(x => x.name === interaction.member.id);
+      const role = interaction.guild?.roles.cache.find(x => x.name === interaction.member.id);
       if (!role) {
         await interaction.deferReply()
         try {

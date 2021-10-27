@@ -65,32 +65,11 @@ client.on('guildMemberAdd', newMember => { //when someone new joins a guild
   try {
     if ((Date.now() - newMember.user.createdAt < 1000 * 60 * 60 * 24 * 30) && newMember.user.displayAvatarURL() === 'https://cdn.discordapp.com/embed/avatars/0.png') {
       newMember.kick();
-});
-client.on('messageDelete', messageDelete => {
-  let mlog = client.db.islandinfo.findOne({
-    guildid: messageDelete.guild.id
-  });
-  try {
-    if (messageDelete.guild.id = '713843260744925234') return;
-    if (messageDelete.member.user.bot || messageDelete.member.hasPermission('MANAGE_MESSAGES') || mlog.messagelog === 'false') {
-      return;
-    }
-  } catch (err) {
-    console.log(err.stack)
-  }
-  try {
-    const embed = new Discord.MessageEmbed()
-      .setColor('#2f3136')
-      .setAuthor(messageDelete.member.user.tag, messageDelete.member.user.avatarURL())
-      .setTitle('Message Deleted!')
-      .setDescription(`${messageDelete.content}`)
-    messageDelete.channel.send({
-      embed: embed
-    })
-  } catch (err) {
-    console.log(err.stack)
-  }
-});
+}
+} catch (e) {
+  newMember.kick()
+}
+})
 
 client.on('interactionCreate', async interaction => {
   if (interaction.isCommand()) {
