@@ -8,7 +8,7 @@ module.exports = {
       .setDescription(`Danger: RESTARTS CELESTE`)
       .setDefaultPermission(false),
     async execute(interaction) {
-      interaction.reply('Restarting Celeste. Please wait a moment')
+      await interaction.reply('Restarting Celeste. Please wait a moment')
       console.log("This is pid " + process.pid);
       setTimeout(function () {
         process.on("exit", function () {
