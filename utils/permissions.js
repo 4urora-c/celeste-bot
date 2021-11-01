@@ -1,7 +1,8 @@
-const commandsToSetPermissions = ['ban, reactionrole', 'warn'];
-const adminCommands = ['refresh', 'ban', 'reactionrole', 'add', 'config', 'friendcoderole', 'remove', 'warn', 'steal', 'restart'];
+const commandsToSetPermissions = ['ban, reactionrole', 'warn', 'kick'];
+const adminCommands = ['refresh', 'ban', 'reactionrole', 'add', 'config', 'friendcoderole', 'remove', 'warn', 'steal', 'restart', 'kick', 'lookup', 'alt'];
 const basicdeny = ['join'];
 const basicallow = ['leaderboard', 'profile', 'island', 'set', 'balance', 'blackjack', 'stonks']
+const verifiedallow = ['alt']
 const supportercommands = ['setcolour']
 module.exports = {
     async refreshCommandPermissionsClient(client) {
@@ -93,6 +94,20 @@ module.exports = {
                       },
                     {
                       id: currentGuild.roles.cache.find(r=> r.name.toLowerCase() === 'basic').id,
+                      type: 'ROLE',
+                      permission: true,
+                    }];
+                    await currentCommand.permissions.add({ permissions });
+                }
+                if (verifiedallow.includes(currentCommand.name)) {
+                    console.log('Refreshed permissions in ' + currentGuild.name + " for " + currentCommand.name);
+                    const permissions = [{
+                          id: '620196347890499604',
+                          type: 'USER',
+                          permission: true,
+                      },
+                    {
+                      id: currentGuild.roles.cache.find(r=> r.name.toLowerCase() === 'verified').id,
                       type: 'ROLE',
                       permission: true,
                     }];

@@ -3,25 +3,27 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-await-in-loop */
 const Discord = require("discord.js");
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
-  name: 'lookup',
-  aliases: 'li',
-  description: 'lookup',
-  execute: async (client, message, config) => {
-    const msgArr = message.content.split(' ');
+data: new SlashCommandBuilder()
+  .setName('lookup')
+  .setDescription('Looks up character name from Celeste database')
+  .setDefaultPermission(false)
+  .addStringOption(option =>
+    option
+      .setName('username')
+      .setDescription('The character name to look up')
+      .setRequired(true)),
+  async execute (interaction) {
     try {
-    if(message.author.id === '620196347890499604' || message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id)) || message.member.permissions.has('ADMINISTRATOR')) {
-    const list = await client.db.islandinfo.find().toArray();
-    if (!msgArr[1]) {
-      message.channel.send('You must provide a name!');
-      return;
-    }
-    const username = msgArr[1];
+    const list = await interaction.client.db.islandinfo.find().toArray();
+
+    const username = interaction.options.getString('username');
     const matches = [];
     list.forEach((member) => {
-      if (member.name) {
-        if (member.name.toLowerCase().includes(username.toLowerCase())) {
-          const userdata = message.guild.members.cache.get(member.id);
+      if (member.name || member.altname) {
+        if (member.name.toLowerCase().includes(username.toLowerCase()) || member.altname?.toLowerCase().includes(username.toLowerCase())) {
+          const userdata = interaction.guild.members.cache.get(member.id);
           const usertag = userdata ? userdata.user.tag : 'Unknown User';
           let userdatastring = '';
           let islandstring = '';
@@ -32,8 +34,15 @@ module.exports = {
             islandstring += is ? ` | **Island**: ${is.description} ` : ' No island name ';
             userdatastring += `${islandstring} ${fc ? `| **Friend Code**: ${fc.description} ` : '| Friend Code: None '}`;
           }
+          if (member.altname.toLowerCase().includes(username.toLowerCase())) {
+            let altland = '';
+            if (member.altinfo) {
+              altland = member.altinfo.find((u) => u.name === 'Island');
+            }
+            userdatastring += `| **Alt Name**: ${member.altname} | **Alt Island**: ${altland.description}`
+          }
           try {
-          matches.push(`> ${usertag} ${userdatastring} ${member.alts ? ` | Alt: ${member.alts}` : ' | No alt registered.'}`);
+          matches.push(`> ${usertag} ${userdatastring}`);
         } catch (err) {
           console.log(err.stack);
         }
@@ -42,14 +51,12 @@ module.exports = {
     });
     const listEmbed = new Discord.MessageEmbed();
     listEmbed.addField('Lookup Matches', `${matches.slice(0, 30).join('\n')}`);
-    message.channel.send({embeds: [listEmbed]}).catch((error) => {
-      message.channel.send('There are too many matches to display.');
+    interaction.reply({embeds: [listEmbed]}).catch((error) => {
+      interaction.reply('There are too many matches to display.');
     });
-  } else {
-    message.channel.send('You do not have permission to run this command.');
-  }
 } catch(err) {
-  message.channel.send('No matches found.')
+  console.log(err.stack)
+  interaction.reply('No matches found.')
 }
 
   },

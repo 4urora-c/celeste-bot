@@ -1,25 +1,57 @@
 /* eslint-disable consistent-return */
 /* eslint-disable max-len */
-
+const Discord = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
-  name: 'kick',
-  description: 'Kicks the user',
-  aliases: 'k',
-  usage: 'kick/alias <user> <reason (optional)>',
-  execute: async (client, message, config) => {
-    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has(['ADMINISTRATOR']))) { return message.reply('You\'re not allowed to use this command!'); }
+  data: new SlashCommandBuilder()
+    .setName('kick')
+    .setDescription('Bans the user')
+    .setDefaultPermission(false)
+    .addUserOption(option =>
+      option
+        .setName('user')
+        .setDescription('The user to kick.')
+        .setRequired(true))
+    .addStringOption(option =>
+      option
+        .setName('reason')
+        .setDescription('The reason for the ban.')
+        .setRequired(false)),
+  async execute(interaction) {
+    // if (interaction.user.id !== '620196347890499604' && !interaction.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has(['ADMINISTRATOR']))) { return message.reply('You\'re not allowed to use this command!'); }
+    const user = interaction.options.getUser('user');
+    const member = await interaction.guild.members.fetch(user);
+    if (!member.bannable) { interaction.reply({ content: 'You can\'t kick that member!', ephemeral: true }); }
+    else {
+      let reason = interaction.options.getString('reason') || 'Unknown';
+      let description = `**${member.user.tag}** was kicked by **${interaction.user}**`;
+      let reasonText = ``
+      if(reason) {
+        description += ` for '**${reason}**'`;
+        reasonText = ` for '**${reason}**'`;
+      }
 
-    const msgArr = message.content.split(' ');
-    const member = message.mentions.members.first() || message.guild.members.cache.get(msgArr[1]);
-    message.channel.bulkDelete(1);
-    if (!member) { return message.reply('Member doesn\'t exist!'); }
-    if (!member.kickable) { return message.reply('You can\'t kick that member!'); }
+      if (interaction.member.id === '620196347890499604') {
+        try {
+          await member.send(`You have been kicked from '**${interaction.guild}**' by **${interaction.member.user.tag}**${reasonText}.`);
+        } catch (err) { }
+        await member.kick({ reason: reason });
+        const embed = new Discord.MessageEmbed()
+          .setColor('RED')
+          .setDescription(description);
+        await interaction.reply({ embeds: [embed] });
+        return;
+      }
+      try {
+        await member.send(`You have been banned from '**${interaction.guild}**' by **${interaction.member.user.tag}**${reasonText}.`);
+      } catch (err) { }
+      await member.kick({ reason: reason })
+        .catch((error) => interaction.reply(`There was an error ${interaction.user}! Error: ${error}`));
 
-    let reason = msgArr.slice(2).join(' ');
-    if (!reason) reason = 'No Reason Provided';
-
-    await member.send(`You have been kicked because of the following reason: **${reason}**`);
-    await member.kick(reason)
-      .catch((error) => message.reply(`There was an error ${message.author}! Error: ${error}`));
-  },
+      const embed = new Discord.MessageEmbed()
+        .setColor('RED')
+        .setDescription(description);
+      await interaction.reply({ embeds: [embed] });
+    }
+  }
 };

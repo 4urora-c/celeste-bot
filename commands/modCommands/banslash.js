@@ -23,7 +23,7 @@ module.exports = {
     const member = await interaction.guild.members.fetch(user);
     if (!member.bannable) { interaction.reply({ content: 'You can\'t ban that member!', ephemeral: true }); }
     else {
-      let reason = interaction.options.getString('reason');
+      let reason = interaction.options.getString('reason') || 'Unknown';
       let description = `**${member.user.tag}** was banned by **${interaction.user}**`;
       let reasonText = ``
       if(reason) {
@@ -43,7 +43,7 @@ module.exports = {
         return;
       }
       try {
-        await member.send(`You have been banned from '**${interaction.guild}**' by **${interaction.member.user.tag}**${reasonText}. If you would like to appeal your ban, please DM them directly. If their DMs are closed or they are not accepting friend requests, please message <@384920723212468225>.`);
+        await member.send(`You have been banned from '**${interaction.guild}**' by **${interaction.member.user.tag}**${reasonText}. If you would like to appeal your ban, please DM them directly.`);
       } catch (err) { }
       await member.ban({ reason: reason })
         .catch((error) => interaction.reply(`There was an error ${interaction.user}! Error: ${error}`));
