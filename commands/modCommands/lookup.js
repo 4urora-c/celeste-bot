@@ -22,8 +22,8 @@ data: new SlashCommandBuilder()
     const matches = [];
     list.forEach((member) => {
       if (member.name || member.altname) {
-        if (member.name.toLowerCase().includes(username.toLowerCase()) || member.altname?.toLowerCase().includes(username.toLowerCase())) {
-          const userdata = interaction.guild.members.cache.get(member.id);
+        if (member.name?.toLowerCase().includes(username.toLowerCase()) || member.altname?.toLowerCase().includes(username.toLowerCase())) {
+          const userdata = interaction.guild?.members.cache.get(member.id);
           const usertag = userdata ? userdata.user.tag : 'Unknown User';
           let userdatastring = '';
           let islandstring = '';
@@ -34,7 +34,7 @@ data: new SlashCommandBuilder()
             islandstring += is ? ` | **Island**: ${is.description} ` : ' No island name ';
             userdatastring += `${islandstring} ${fc ? `| **Friend Code**: ${fc.description} ` : '| Friend Code: None '}`;
           }
-          if (member.altname.toLowerCase().includes(username.toLowerCase())) {
+          if (member.altname) {
             let altland = '';
             if (member.altinfo) {
               altland = member.altinfo.find((u) => u.name === 'Island');
