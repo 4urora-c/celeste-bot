@@ -46,7 +46,7 @@ module.exports = {
           .setThumbnail(user.avatarURL());
 
         if (userdata.altname) {
-          embed.addField('Name', userdata.name);
+          embed.addField('Name', userdata.altname);
         }
         if (userdata.altinfo) {
           userdata.altinfo.sort((a, b) => {
@@ -71,7 +71,7 @@ module.exports = {
             .setThumbnail(interaction.member.user.avatarURL());
 
           if (userdata.altname) {
-            embed.addField('Name', userdata.name);
+            embed.addField('Name', userdata.altname);
           }
           if (userdata.altinfo) {
             userdata.altinfo.sort((a, b) => {
