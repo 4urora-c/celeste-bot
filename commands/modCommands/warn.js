@@ -26,8 +26,8 @@ module.exports = {
     } else {
     if (!reason || reason === '') reason = 'Unknown';
     const currentDate = Date.now();
-    const user = await client.db.warn.findOne({ id: targetUser.id }) || { warns: [] };
-    const modData = await client.db.modstats.findOne({ id: interaction.member.id }) || {};
+    const user = await interaction.client.db.warn.findOne({ id: targetUser.id }) || { warns: [] };
+    const modData = await interaction.client.db.modstats.findOne({ id: interaction.member.id }) || {};
     const modWarns = modData.warns || [];
     user.warns.filter((warn) => currentDate - warn.date <= interaction.cient.db.config.warnexpiration);
     user.warns.push({
@@ -60,8 +60,8 @@ module.exports = {
   }
     interaction.reply(`**${targetUser.user.tag}** has been warned! User currently has **${user.warns.length} active warnings**!`);
 
-    await client.db.warn.updateOne({ id: targetUser.id, guildID: interaction.guild.id }, { $set: { warns: user.warns } }, { upsert: true });
-    await client.db.modstats.updateOne({ id: interaction.member.id }, { $set: { warns: modWarns } }, { upsert: true });
+    await interaction.client.db.warn.updateOne({ id: targetUser.id, guildID: interaction.guild.id }, { $set: { warns: user.warns } }, { upsert: true });
+    await interaction.client.db.modstats.updateOne({ id: interaction.member.id }, { $set: { warns: modWarns } }, { upsert: true });
   }
   },
 };
