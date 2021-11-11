@@ -33,7 +33,7 @@ module.exports = {
     user.warns.push({
       reason,
       date: currentDate,
-      mod: message.author.tag,
+      mod: interaction.member.tag,
     });
     modWarns.push({
       user: targetUser.id,
@@ -46,7 +46,7 @@ module.exports = {
     targetUser.send(`You have been warned!\nReason: **${reason}**. Please note that this is your third and final warning.`).catch();
   } else if (user.warns.length > 3){
     if (targetUser.bannable && !targetUser.roles.cache.some((r) => interaction.client.db.config.permissions.moderation.includes(r.id))) {
-      targetUser.send(`You have been banned from **${interaction.guild.name}** for accumulating 4 warnings. \nThe reason for the ban is **${reason}**. To appeal this ban, please DM **${message.member.user.tag}** directly. Thank you for being a part of our community.`);
+      targetUser.send(`You have been banned from **${interaction.guild.name}** for accumulating 4 warnings. \nThe reason for the ban is **${reason}**. To appeal this ban, please DM **${interaction.member.user.tag}** directly. Thank you for being a part of our community.`);
       targetUser.ban();
       const embed = new Discord.MessageEmbed()
       .setColor('RED')
