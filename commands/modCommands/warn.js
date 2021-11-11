@@ -19,7 +19,8 @@ module.exports = {
         .setDescription('The reason for the warn.')
         .setRequired(false)),
   async execute(interaction) {
-    let targetUser = interaction.options.getUser('user')
+    let mem = interaction.options.getUser('user')
+    let targetUser = await interaction.guild.members.fetch(mem);
     let reason = interaction.options.getString('reason')
     if (targetUser.id === '620196347890499604' || targetUser.id === interaction.member.id) {
       return interaction.reply('You cannot warn this user!')
