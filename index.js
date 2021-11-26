@@ -1,5 +1,4 @@
 // This is the starting point of the bot
-require('dotenv-flow').config();
 const Discord = require('discord.js');
 const fs = require('fs');
 const DisTube = require('distube');
