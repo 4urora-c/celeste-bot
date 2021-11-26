@@ -4,7 +4,7 @@ const msToString = require('../utils/msToString');
 const Discord = require('discord.js');
 module.exports = (client, distube, message) => {
   if (!client.ready) return;
-  if (message.author.bot) return;
+  if (message.member.bot) return;
   const msg = message.content.toLowerCase();
   const commandName = msg.split(' ')[0].substring(1);
   const date = () => {
@@ -65,7 +65,7 @@ module.exports = (client, distube, message) => {
 }
   async function checkBoostStatus() {
     try {
-    if (!message.member.roles.cache.some(role => role.name === 'Booster')) {
+      if (!message.member?.roles.cache.some(role => role.name.toLowerCase() === 'booster') && message.member?.roles.cache.some(role => role.name.toLowerCase() === 'supporter')) {
       if (message.member.roles.cache.some(r => r.id === '819189757208428564')) {
         message.member.roles.remove('819189757208428564')
       }
@@ -91,9 +91,19 @@ module.exports = (client, distube, message) => {
         message.member.roles.remove('819192274549997618')
       }
     }
+
   } catch(err) {
 
   }
+  }
+  async function checkSupporterStatus() {
+    try {
+      if (!message.member.roles.cache.some(role => role.name.toLowerCase() === 'booster') && !message.member.roles.cache.some(role => role.name.toLowerCase() === 'supporter')) {
+        if (message.member.roles.cache.some(role => role.name === message.member.id)) {
+        await message.guild.roles.cache.find(role => role.name === message.member.id).delete();
+        }
+      }
+    } catch(err) {console.log(err.stack)}
   }
     if (message.content.startsWith(config.prefix)) {
     const command = client.commands.get(commandName);
@@ -124,6 +134,7 @@ module.exports = (client, distube, message) => {
     try {
     checkHighlights();
     checkBoostStatus();
+    checkSupporterStatus();
   } catch(err) {
     console.log('something went wrong with boost status')
   }

@@ -3,57 +3,65 @@
 /* eslint-disable no-await-in-loop */
 
 const { MessageEmbed } = require('discord.js');
-
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
-  name: 'reactionrole',
-  description: 'Make a reactrole message',
-  aliases: 'rr',
-  usage: 'reactrole',
-  execute: async (client, message, config) => {
-    const msgArr = message.content.split(' ');
-    if (message.author.id !== '620196347890499604' && !message.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || message.member.permissions.has(['ADMINISTRATOR']))) { return message.reply('You\'re not allowed to use this command!'); }
-    let args = msgArr.slice(1).join(' ').split(', ');
-    let name = args[0];
-    let ts;
+  data: new SlashCommandBuilder()
+    .setName('reactrole')
+    .setDescription('Add your information to the Celeste database')
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option
+        .setName('name')
+        .setDescription('The name of the embed')
+        .setRequired(true))
+    .addStringOption(option =>
+      option
+        .setName('description')
+        .setDescription('The description for the embed')
+        .setRequired(true))
+    .addStringOption(option =>
+      option
+        .setName('colour')
+        .setDescription('The colour of the embed'))
+    .addStringOption(option =>
+      option
+        .setName('footer')
+        .setDescription('The footer for the embed')),
+  execute: async (interaction) => {
+    if (interaction.member.id !== '620196347890499604' && !interaction.member.roles.cache.some((r) => config.permissions.moderation.includes(r.id) || interaction.member.permissions.has(['ADMINISTRATOR']))) { return interaction.reply('You\'re not allowed to use this command!'); }
+    let name = interaction.options.getString('name');
+    let description = interaction.options.getString('description')
+    let colour = interaction.options.getString('colour')
+    let footer = interaction.options.getString('footer')
     const embed = new MessageEmbed()
       .setTitle(name)
-      .setDescription('React to a reaction to get the role!\n\n')
-      if (args[1]) {
+      .setDescription(description)
+      if (colour) {
         try {
-        await embed.setColor(args[1].toUpperCase())//.catch((err) => {
+        await embed.setColor(colour.toUpperCase())//.catch((err) => {
           /*if (args[1].length > 7) {
             console.log(err)
             return message.channel.send('That is not a valid colour!');
           }
         })*/} catch(err) {
-        if (args[1].length > 7) {
-          console.log(err)
-          return message.channel.send('That is not a valid colour!');
-        }
+        return interaction.reply('Invalid embed colour selected')
       }
       }
-      if (args[2]) {
+      if (footer) {
         try {
-          if (ts !== 'false') {
-        await embed.setFooter(args[2])//.catch((err) => {
-        /*  console.log(err)
-          return message.channel.send('There was an error while creating the embed footer.');
-        })*/
-      } else {
-        await embed.setFooter(args[2])
-      }
+        await embed.setFooter(footer)
       } catch(err) {
         console.log(err)
-        return message.channel.send('There was an error while creating the embed footer.');
+        return interaction.reply('There was an error while creating the embed footer.');
       }
       }
-    const reactMessage = await message.channel.send({embeds: [embed]});
-    message.delete();
+    const reactMessage = await interaction.channel.send({embeds: [embed]});
+    interaction.reply({ content: 'Embed created!', ephemeral: true })
 
-    const guildRole = client.reactrolelocal.find((roleGuild) => roleGuild.id === message.guild.id);
+    const guildRole = interaction.client.reactrolelocal.find((roleGuild) => roleGuild.id === interaction.guild.id);
 
     if (!guildRole) {
-      client.reactrolelocal.push({
+      interaction.client.reactrolelocal.push({
         id: reactMessage.id,
         roles: {},
       });
@@ -63,7 +71,7 @@ module.exports = {
       };
     }
 
-    client.db.reactrole.updateOne(
+    interaction.client.db.reactrole.updateOne(
       { id: reactMessage.id },
       {
         $set: {

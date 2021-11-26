@@ -1,5 +1,5 @@
 const commandsToSetPermissions = ['ban, reactionrole', 'warns', 'kick'];
-const adminCommands = ['refresh', 'ban', 'reactionrole', 'add', 'config', 'friendcoderole', 'remove', 'warns', 'steal', 'restart', 'kick', 'lookup', 'alt', 'resetinfo'];
+const adminCommands = ['refresh', 'ban', 'reactionrole', 'add', 'config', 'friendcoderole', 'remove', 'warns', 'steal', 'restart', 'kick', 'lookup', 'alt', 'resetinfo', 'reactrole'];
 const basicdeny = [];
 const basicallow = ['leaderboard', 'profile', 'island', 'set', 'balance', 'blackjack', 'stonks']
 const verifiedallow = ['alt']

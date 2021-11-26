@@ -38,6 +38,7 @@
     "snekfetch": "^4.0.4",
     "sodium": "^3.0.2",
     "spotify-url-info": "^2.2.3",
+    "utils-discord": "^2.0.2",
     "ytdl-core": "^4.8.3"
   }
 }
