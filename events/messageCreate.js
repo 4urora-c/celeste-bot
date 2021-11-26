@@ -4,7 +4,6 @@ const msToString = require('../utils/msToString');
 const Discord = require('discord.js');
 module.exports = (client, distube, message) => {
   if (!client.ready) return;
-  if (message.member.bot) return;
   const msg = message.content.toLowerCase();
   const commandName = msg.split(' ')[0].substring(1);
   const date = () => {
