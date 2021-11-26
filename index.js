@@ -99,9 +99,8 @@ fs.readdir('./events/', async (err, files) => {
         for (const file of files) {
           if (file.endsWith('.js')) {
             const props = require(`${dir}${file}`);
-            console.log(`Successfully loaded ${props.name}`);
+            console.log(`Successfully loaded ${props.name ? props.name : props.data.name}`);
             if (props.data) {
-              console.log(props.data)
               client.slashCommands.set(props.data.name, props);
               try {
                 commands.push(props.data.toJSON());
@@ -120,27 +119,21 @@ fs.readdir('./events/', async (err, files) => {
     });
   };
   await importAllFiles('./commands/');
-  (async () => {
-    try {
-      if (!guildId) {
-        await rest.put(
-          Routes.applicationCommands(clientId), {
-          body: commands
-        },
-        );
-        console.log('Successfully registered application commands globally');
-      } else {
-        await rest.put(
-          Routes.applicationGuildCommands(clientId, guildId), {
-          body: commands
-        },
-        );
-        console.log('Successfully registered application commands for development guild');
-      }
-    } catch (error) {
-      if (error) console.error(error);
-    }
-  })();
+  client.on("ready", async () => {
+      if (!client.ready) await client.utils.delay(5000);
+      client.guilds.cache.forEach(async(server) => {
+          try {
+              await rest.put(
+                  Routes.applicationGuildCommands(client.user.id, server.id),
+                  { body: commands },
+              );
+              console.log(`A total of ${commands.length} (/) commands were loaded.`);
+          } catch (error) {
+              console.error(error);
+          }
+      })
+      await client.utils.delay(5000);
+  })
   files.forEach((file) => {
     if (!file.endsWith('.js')) return;
     const evt = require(`./events/${file}`);
@@ -152,7 +145,5 @@ fs.readdir('./events/', async (err, files) => {
 const clientId = '816691308353290280';
 const guildId = '808040418221883402';
 const testServer = client.guilds.cache.get(guildId)
-console.log(testServer ? testServer.commands.fetch() : 'No server found')
 client.login(token);
-
 module.exports = client, distube;
