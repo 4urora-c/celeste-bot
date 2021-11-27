@@ -125,7 +125,7 @@ module.exports = {
             embeds: [embedA],
           });
           interaction.client.db.islandinfo.updateOne({
-            id: interaction.author.id,
+            id: interaction.member.id,
           }, {
             $set: {
               moreinfo: user.moreinfo,
