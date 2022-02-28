@@ -92,32 +92,6 @@ module.exports = {
           .setColor('#5b4194')
           .setDescription(`Your name has been set to **${info}**!`);
         interaction.reply({ embeds: [embedA] });
-        try {
-          const guilddata = await interaction.client.db.islandinfo.findOne({
-            guildid: interaction.guild.id
-          });
-          if (guilddata.friendcoderequirement === 'true') {
-            const exists = await interaction.client.db.islandinfo.findOne({
-              guildid: interaction.guild.id.guildid
-            });
-            if (exists) {
-              if (user.name && user.moreinfo.length === 2) {
-              if (guilddata.moreinfo[0].name === 'roleinfo') {
-                interaction.member?.roles.add(`${guilddata.moreinfo[0].description}`);
-              } else if (guilddata.moreinfo[1].name === 'roleinfo') {
-                interaction.member?.roles.add(`${guilddata.moreinfo[1].description}`);
-              }
-            } else {
-              return;
-            }
-          }
-          }
-        } catch (err) {
-          //console.log(`No role or friend code setting found for server ${message.guild}`)
-          console.log(err.stack)
-          return;
-        }
-
       }
       else if (setting === 'This is your dream address, found by sleeping in a bed and uploading your island.') {
         let name = 'DA';
@@ -179,32 +153,6 @@ module.exports = {
             embeds: [embedA],
           });
         }
-        try {
-          const guilddata = await interaction.client.db.islandinfo.findOne({
-            guildid: interaction.guild.id
-          });
-          if (guilddata.friendcoderequirement === 'true') {
-            const exists = await interaction.client.db.islandinfo.findOne({
-              guildid: interaction.guild.id.guildid
-            });
-            if (exists) {
-              if (user.name && user.moreinfo.length === 2) {
-              if (guilddata.moreinfo[0].name === 'roleinfo') {
-                interaction.member?.roles.add(`${guilddata.moreinfo[0].description}`);
-              } else if (guilddata.moreinfo[1].name === 'roleinfo') {
-                interaction.member?.roles.add(`${guilddata.moreinfo[1].description}`);
-              }
-            } else {
-              return;
-            }
-          }
-          }
-        } catch (err) {
-          //console.log(`No role or friend code setting found for server ${message.guild}`)
-          console.log(err.stack)
-          return;
-        }
-
       }
     else if (setting === 'This is your friend code, found on your Switch profile.') {
 
@@ -276,16 +224,12 @@ module.exports = {
                     guildid: interaction.guild.id.guildid
                   });
                   if (exists) {
-                    if (user.name && user.moreinfo.length === 2) {
                     if (guilddata.moreinfo[0].name === 'roleinfo') {
                       interaction.member?.roles.add(`${guilddata.moreinfo[0].description}`);
                     } else if (guilddata.moreinfo[1].name === 'roleinfo') {
                       interaction.member?.roles.add(`${guilddata.moreinfo[1].description}`);
                     }
-                  } else {
-                    return;
                   }
-                }
                 }
               } catch (err) {
                 //console.log(`No role or friend code setting found for server ${message.guild}`)
