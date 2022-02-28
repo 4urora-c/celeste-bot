@@ -141,8 +141,8 @@ fs.readdir('./events/', async (err, files) => {
     client.on(evtName, (...args) => evt(client, distube, ...args));
   });
 });
-const clientId = '816691308353290280';
-const guildId = '808040418221883402';
+const clientId = '821212153075073054';
+const guildId = '821217299058524170';
 const testServer = client.guilds.cache.get(guildId)
 client.login(token);
 client.utils = require("utils-discord");
