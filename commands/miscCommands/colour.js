@@ -42,7 +42,7 @@ module.exports = {
         const create = await interaction.guild.roles.create({
           name: interaction.member.id,
           color: colour,
-          position: interaction.guild.roles.cache.find(x => x.name.toLowerCase() === 'booster').position + 1
+          position: interaction.guild.roles.cache.find(x => x.name.toLowerCase() === 'supporter').position + 1
         }).catch(console.error)
         interaction.member.roles.add(create)
       } catch(e) {
