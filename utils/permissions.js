@@ -196,6 +196,11 @@ module.exports = {
                     id: currentGuild.roles.cache.find(r=> r.name.toLowerCase() === 'booster').id,
                     type: 'ROLE',
                     permission: true,
+                  },
+                  {
+                    id: currentGuild.roles.cache.find(r=> r.name.toLowerCase() === 'donor').id,
+                    type: 'ROLE',
+                    permission: true,
                   }];
                   await currentCommand.permissions.add({ permissions });
               }
